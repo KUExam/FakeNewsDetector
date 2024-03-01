@@ -71,6 +71,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer  # Import the PorterStemmer
 
 # Load the data
 url1 = 'https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv'
@@ -91,15 +92,28 @@ vocab_before = len(set(word.lower() for content in df1['tokenized_content'] for 
 # Apply stopwords removal
 df1['filtered_content'] = df1['tokenized_content'].apply(lambda x: [word for word in x if word.lower() not in stop_words])
 
+# Initialize the PorterStemmer
+stemmer = PorterStemmer()
+
+# Apply stemming to each word in the filtered content
+df1['stemmed_content'] = df1['filtered_content'].apply(lambda x: [stemmer.stem(word) for word in x])
+
 # Flatten the list of lists into a single list after removing stopwords
-flat_list_after = [word for sublist in df1['filtered_content'] for word in sublist]
+flat_list_after_stopwords = [word for sublist in df1['filtered_content'] for word in sublist]
+
+# Correctly flatten the list of lists into a single list after stemming
+flat_list_after_stemming = [word for sublist in df1['stemmed_content'] for word in sublist]
 
 # Compute the size of the vocabulary after removing stopwords
-vocab_after = len(set(word.lower() for word in flat_list_after))
+vocab_after = len(set(word.lower() for word in flat_list_after_stopwords))
 
-# Compute the reduction rate of the vocabulary size
-reduction_rate = (vocab_before - vocab_after) / vocab_before
+# Compute the size of the vocabulary after stemming using the correctly stemmed list
+vocab_after_stemming = len(set(word.lower() for word in flat_list_after_stemming))
+
+# Compute the reduction rate of the vocabulary size after stemming
+reduction_rate_after_stemming = (vocab_after - vocab_after_stemming) / vocab_after
 
 print(f"Vocabulary size before removing stopwords: {vocab_before}")
 print(f"Vocabulary size after removing stopwords: {vocab_after}")
-print(f"Reduction rate of the vocabulary size: {reduction_rate:.2%}")
+print(f"Vocabulary size after stemming: {vocab_after_stemming}")
+print(f"Reduction rate of the vocabulary size after stemming: {reduction_rate_after_stemming:.2%}")
