@@ -1,4 +1,5 @@
 import csv
+import re
 from cleantext import clean
 
 def clean_text_with_cleantext(text):
@@ -29,4 +30,4 @@ df = pd.read_csv('news_sample.csv')
 
 df['content']=df['content'].apply(clean_text_with_cleantext)
 df.head()
-df.to_csv("cleanednews.csv")
+df.to_csv("cleanedsample_news.csv")
