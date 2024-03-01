@@ -2,7 +2,8 @@ import csv
 from cleantext import clean
 
 def clean_text_with_cleantext(text):
-    date
+    date_pattern = r'\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b'
+    text = re.sub(date_pattern, '<DATE>', text)
     cleaned_text = clean(text,
                          fix_unicode=True,               # fix various unicode errors
                          to_ascii=True,                  # transliterate to closest ASCII representation
