@@ -50,4 +50,35 @@ df = pd.read_csv(url, index_col=0)
 
 df['content']=df['content'].apply(clean_text_with_cleantext)
 df.head()
-df.to_csv("cleanedsample1.csv")
+df.to_csv("cleanedsample_news.csv")
+
+
+
+# import nltk
+# from nltk.corpus import stopwords
+# url1=''
+# df1 = pd.read_csv(url1)
+# tokens = nltk.word_tokenize(df)
+
+
+
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+ 
+url1=''
+ 
+stop_words = set(stopwords.words('english'))
+ 
+word_tokens = word_tokenize(url1)
+# converts the words in word_tokens to lower case and then checks whether 
+#they are present in stop_words or not
+filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
+#with no lower case conversion
+filtered_sentence = []
+ 
+for w in word_tokens:
+    if w not in stop_words:
+        filtered_sentence.append(w)
+ 
+print(word_tokens)
+print(filtered_sentence)
