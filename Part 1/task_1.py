@@ -64,7 +64,7 @@ df.head()
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
  
-url1=''
+url1='https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv?token=GHSAT0AAAAAACO6SV2TCNQ75WTM2HO2ZAN4ZPBXEJA'
  
 stop_words = set(stopwords.words('english'))
  
