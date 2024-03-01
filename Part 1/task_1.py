@@ -2,7 +2,21 @@ import re
 from cleantext import clean
 
 def clean_text_with_cleantext(text):
-    date_pattern = r'\b(?:\d{1,2}[-/]\d{1,2}[-/]\d{2,4})\b'
+    date_pattern = re.compile(r'''
+    \b(?:[jJ]an(?:uary)?|
+    [fF]eb(?:ruary)?|
+    [mM]ar(?:ch)?|
+    [aA]pr(?:il)?|
+    [mM]ay|
+    [jJ]un(?:e)?|
+    [jJ]ul(?:y)?|
+    [Aa]ug(?:ust)?|
+    [sS]ep(?:tember)?|
+    [oO]ct(?:ober)?|
+    [nN]ov(?:ember)?|
+    [dD]ec(?:ember)?)\s\d{1,2},?\s\d{4}\b|
+    \b\d{4}-\d{2}-\d{2}\b
+    ''', re.X)
     text = re.sub(date_pattern, '<DATE>', text)
     cleaned_text = clean(
         text,
