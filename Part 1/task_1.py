@@ -26,7 +26,8 @@ def clean_text_with_cleantext(text):
 
 import pandas as pd
 import numpy as np
-df = pd.read_csv('news_sample.csv')
+url='https://raw.githubusercontent.com/several27/FakeNewsCorpus/master/news_sample.csv'
+df = pd.read_csv(url)
 
 df['content']=df['content'].apply(clean_text_with_cleantext)
 df.head()
