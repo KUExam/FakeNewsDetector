@@ -60,26 +60,45 @@ df.head()
 # tokens = nltk.word_tokenize(df)
 
 
+# from nltk.corpus import stopwords
+# url1=''
+# df1 = pd.read_csv(url1)
+# tokens = nltk.word_tokenize(df)
+
+
 import nltk
 nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
- 
-url1='https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv?token=GHSAT0AAAAAACO6SV2TCNQ75WTM2HO2ZAN4ZPBXEJA'
+
+# Load the data
+url1 = 'https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv'
 df1 = pd.read_csv(url1, index_col=0)
 
+# Define the stopwords
 stop_words = set(stopwords.words('english'))
- 
-word_tokens = word_tokenize(df1['content'])
-# converts the words in word_tokens to lower case and then checks whether 
-#they are present in stop_words or not
-filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
-#with no lower case conversion
-filtered_sentence = []
- 
-for w in word_tokens:
-    if w not in stop_words:
-        filtered_sentence.append(w)
- 
-df1.head()
-filtered_sentence.to_csv("test.csv")
+
+# Ensure 'content' column contains only strings
+df1['content'] = df1['content'].astype(str)
+
+# Tokenize first, then remove stopwords
+df1['tokenized_content'] = df1['content'].apply(word_tokenize)
+
+# Compute the size of the vocabulary before removing stopwords
+vocab_before = len(set(word.lower() for content in df1['tokenized_content'] for word in content))
+
+# Apply stopwords removal
+df1['filtered_content'] = df1['tokenized_content'].apply(lambda x: [word for word in x if word.lower() not in stop_words])
+
+# Flatten the list of lists into a single list after removing stopwords
+flat_list_after = [word for sublist in df1['filtered_content'] for word in sublist]
+
+# Compute the size of the vocabulary after removing stopwords
+vocab_after = len(set(word.lower() for word in flat_list_after))
+
+# Compute the reduction rate of the vocabulary size
+reduction_rate = (vocab_before - vocab_after) / vocab_before
+
+print(f"Vocabulary size before removing stopwords: {vocab_before}")
+print(f"Vocabulary size after removing stopwords: {vocab_after}")
+print(f"Reduction rate of the vocabulary size: {reduction_rate:.2%}")
