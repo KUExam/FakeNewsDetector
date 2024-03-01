@@ -65,10 +65,11 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
  
 url1='https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv?token=GHSAT0AAAAAACO6SV2TCNQ75WTM2HO2ZAN4ZPBXEJA'
- 
+df1 = pd.read_csv(url1, index_col=0)
+
 stop_words = set(stopwords.words('english'))
  
-word_tokens = word_tokenize(url1)
+word_tokens = word_tokenize(df1['content'])
 # converts the words in word_tokens to lower case and then checks whether 
 #they are present in stop_words or not
 filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
