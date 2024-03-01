@@ -53,14 +53,13 @@ df.head()
 
 
 
-# import nltk
 # from nltk.corpus import stopwords
 # url1=''
 # df1 = pd.read_csv(url1)
 # tokens = nltk.word_tokenize(df)
 
 
-
+import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
  
@@ -80,3 +79,5 @@ for w in word_tokens:
     if w not in stop_words:
         filtered_sentence.append(w)
  
+df1.head()
+filtered_sentence.to_csv("test.csv")
