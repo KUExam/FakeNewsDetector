@@ -53,6 +53,7 @@ df.head()
 
 
 
+
 # from nltk.corpus import stopwords
 # url1=''
 # df1 = pd.read_csv(url1)
@@ -62,22 +63,22 @@ df.head()
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
- 
-url1='https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv?token=GHSAT0AAAAAACO6SV2TCNQ75WTM2HO2ZAN4ZPBXEJA'
+
+# Read the CSV file from the given URL
+url1 = 'https://raw.githubusercontent.com/KUExam/FakeNewsDetector/main/cleanedsample1.csv?token=GHSAT0AAAAAACO6SV2TCNQ75WTM2HO2ZAN4ZPBXEJA'
 df1 = pd.read_csv(url1, index_col=0)
 
-stop_words = set(stopwords.words('english'))
- 
-word_tokens = word_tokenize(df1['content'])
-# converts the words in word_tokens to lower case and then checks whether 
-#they are present in stop_words or not
-filtered_sentence = [w for w in word_tokens if not w.lower() in stop_words]
-#with no lower case conversion
-filtered_sentence = []
- 
-for w in word_tokens:
-    if w not in stop_words:
-        filtered_sentence.append(w)
- 
-df1.head()
-filtered_sentence.to_csv("test.csv")
+# Assuming there's a column named 'text' containing the text data
+text_column = 'text'
+text_data = df1[text_column].dropna()  # Remove any missing values
+
+# Tokenize the text data
+word_tokens = [word_tokenize(text) for text in text_data]
+
+# Filter out stop words
+filtered_sentences = []
+for tokens in word_tokens:
+    filtered_sentence = [w for w in tokens if not w.lower() in stop_words]
+    filtered_sentences.append(filtered_sentence)
+
+# Now 'filtered_sentences' contains tokenized and filtered text data
