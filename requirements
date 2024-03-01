@@ -1,1 +1,6 @@
-pandas as pd
+# Documentation
+pandas==2.2.1
+re==3.12.2
+seaborn==0.13.2
+clean-text==0.6.0
+scikit-learn==1.4.0
