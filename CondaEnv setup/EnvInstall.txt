@@ -1,11 +1,19 @@
-Just type in this command to setup the env (stand in correct directory)
+First way
+    Just type in this command to setup the env (stand in .yml files directory)
 
->> conda env create -f environment.yml
+    >> conda env create -f environment.yml
 
-Then to activate env use
+    Then to activate env use
 
->> conda activate envFakeNews
+    >> conda activate envFakeNews
 
-If this doesnt activate the env called envFakeNews, check if its downloaded:
+    If this doesnt activate the env called envFakeNews, check if its downloaded:
 
->> conda env list
+    >> conda env list
+
+    You can also create it manually using requirements.txt
+
+Second way
+    >> conda create -n envFakeNews python=3.12.2
+    >> conda activate envFakeNews
+    >> pip install -r requirements.txt
