@@ -1,0 +1,11 @@
+Just type in this command to setup the env (stand in correct directory)
+
+>> conda env create -f environment.yml
+
+Then to activate env use
+
+>> conda activate envFakeNews
+
+If this doesnt activate the env called envFakeNews, check if its downloaded:
+
+>> conda env list
