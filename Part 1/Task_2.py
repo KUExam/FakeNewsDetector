@@ -13,7 +13,7 @@ from textblob import TextBlob
 # import spacy  # Uncomment if using Spacy for NER
 
 # Assuming necessary NLTK downloads have been executed earlier
-csv_file_name = "995,000_rows.csv"
+csv_file_name = "FakeNews_2000rows.csv"
 
 # Initialization
 stemmer = PorterStemmer()
