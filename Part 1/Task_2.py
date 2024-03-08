@@ -107,8 +107,10 @@ print(word_counts_after.most_common(100))
 # Display the counts
 print(article_type_counts)
 
+df.to_csv('processed_data.csv', index=False)
+
 # Reset index of df after all preprocessing to ensure alignment
-df.reset_index(drop=True, inplace=True)
+#df.reset_index(drop=True, inplace=True)
 
 # Initialize TF-IDF Vectorizer without stopwords to simplify the demonstration
 tfidf = TfidfVectorizer(stop_words='english', max_features=10000)
@@ -152,5 +154,3 @@ for article_type in article_types:
 # Print top 10 words for each article type
 for article_type, words in top_words_per_type.items():
     print(f"Top 10 words for {article_type}: {words}")
-
-df.to_csv('processed_data.csv', index=False)
