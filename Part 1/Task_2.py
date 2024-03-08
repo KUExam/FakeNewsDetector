@@ -9,22 +9,16 @@ import matplotlib.pyplot as plt
 
 # Load dataset and preprocess
 df = pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'])
-#df = df[df['id'].apply(lambda x: str(x).isdigit())]
-#df['content'] = df['content'].fillna('')
+df = df[df['id'].apply(lambda x: str(x).isdigit())]
+df['content'] = df['content'].fillna('')
 # Remove all wikileaks.org articles that start with 'Tor'
-#df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
+df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
+df = df[df['type'] != 'unknown']
 
 # Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
-
-# Remove outliers with id named 'id'
-df = df[df['id'].apply(lambda x: str(x).isdigit())]
-df = df[df['type'] != 'unknown']
-
-# Replace NaN values in the 'content' column with empty strings
-df['content'] = df['content'].fillna('')
 
 # Function to replace tokens in text
 def replace_tokens(text):
@@ -57,35 +51,18 @@ df['content'] = df['content'].apply(replace_tokens)
 # Tokenize the content
 df['tokenized_content'] = df['content'].apply(lambda x: tokenizer.tokenize(x))
 
-
 # Perform sentiment analysis on the modified 'content'
 df['sentiment'] = df['content'].apply(lambda x: TextBlob(x).sentiment.polarity)
 
 # Filter out stopwords and stem the remaining words
 df['filtered_content'] = df['tokenized_content'].apply(lambda x: [stemmer.stem(word) for word in x if word.lower() not in stop_words])
 
-# Frequency analysis
-word_counts_before = Counter([word for row in df['tokenized_content'] for word in row])
-word_counts_after = Counter([word for row in df['filtered_content'] for word in row])
-
-# Print URL, NUM, and DATE counts
-url_count = df['content'].str.count('<URL>').sum()
-num_count = df['content'].str.count('<NUM>').sum()
-print(f"URL count: {url_count}")
-print(f"Numeric values count: {num_count}")
-
-# 100 most frequent words before and after processing
-print("\n100 most frequent words BEFORE processing:")
-print(word_counts_before.most_common(100))
-
-print("\n100 most frequent words AFTER processing:")
-print(word_counts_after.most_common(100))
-
 # Count the number of each article type
 article_type_counts = df['type'].value_counts()
 
-# Display the counts
-print(article_type_counts)
+# Frequency analysis
+word_counts_before = Counter([word for row in df['tokenized_content'] for word in row])
+word_counts_after = Counter([word for row in df['filtered_content'] for word in row])
 
 # Article length and sentiment analysis by article type
 df['article_length'] = df['content'].apply(lambda x: len(x.split()))
@@ -110,3 +87,19 @@ plt.xlabel('Frequency')
 plt.ylabel('Word')
 plt.title('Top 100 Most Frequent Words')
 plt.show()
+
+# Print URL, NUM, and DATE counts
+url_count = df['content'].str.count('<URL>').sum()
+num_count = df['content'].str.count('<NUM>').sum()
+print(f"URL count: {url_count}")
+print(f"Numeric values count: {num_count}")
+
+# 100 most frequent words before and after processing
+print("\n100 most frequent words BEFORE processing:")
+print(word_counts_before.most_common(100))
+
+print("\n100 most frequent words AFTER processing:")
+print(word_counts_after.most_common(100))
+
+# Display the counts
+print(article_type_counts)
