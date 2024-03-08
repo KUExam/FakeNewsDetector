@@ -19,6 +19,11 @@ df['content'] = df['content'].fillna('')
 df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
 df = df[df['type'] != 'unknown']
 df.dropna(subset=['type'], inplace=True)
+# Create the 'article_length' column
+df['article_length'] = df['content'].apply(lambda x: len(x.split()))
+
+# Check for negative article lengths
+negative_lengths = df[df['article_length'] < 0]
 
 # Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
