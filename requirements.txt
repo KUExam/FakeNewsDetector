@@ -8,3 +8,4 @@ matplotlib-inline==0.1.6
 jupyterlab==4.1.1
 NLTK==3.8.1
 textblob==0.18.0
+scikit-learn==1.4.1
