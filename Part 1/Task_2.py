@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 df = pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'])
 df = df[df['id'].apply(lambda x: str(x).isdigit())]
 df['content'] = df['content'].fillna('')
+# Remove all wikileaks.org articles that start with 'Tor'
+df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
 
 # Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
