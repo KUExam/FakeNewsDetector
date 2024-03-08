@@ -89,4 +89,3 @@ aggregated_data = df.groupby('type').agg({
 
 print("\nAverage and Median of Sentiment and Article Length by Article Type:")
 print(aggregated_data)
-
