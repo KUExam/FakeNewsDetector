@@ -110,7 +110,7 @@ print(article_type_counts)
 df.to_csv('processed_data.csv', index=False)
 
 # Reset index of df after all preprocessing to ensure alignment
-#df.reset_index(drop=True, inplace=True)
+df.reset_index(drop=True, inplace=True)
 
 # Initialize TF-IDF Vectorizer without stopwords to simplify the demonstration
 tfidf = TfidfVectorizer(stop_words='english', max_features=10000)
