@@ -43,6 +43,7 @@ def replace_tokens(text):
         text = re.sub(pattern, '<DATE>', text)
     return text
 
+# Preprocess content by tokenizing, stemming, and removing stopwords
 def preprocess_text(text):
     text = replace_tokens(text)
     tokens = tokenizer.tokenize(text.lower())
@@ -182,6 +183,7 @@ article_types = df['type'].unique()
 # Dictionary to hold top words for each article type
 top_words_per_type = {}
 
+# Initialize and apply TF-IDF vectorization
 for article_type in article_types:
     # Find indices of articles of the current type
     indices = df[df['type'] == article_type].index
@@ -206,6 +208,6 @@ for article_type in article_types:
     else:
         top_words_per_type[article_type] = ['No articles found']
 
-# Print top 10 words for each article type
+# Print top words for each article type based on TF-IDF analysis
 for article_type, words in top_words_per_type.items():
     print(f"Top 10 words for {article_type}: {words}")
