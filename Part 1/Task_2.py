@@ -7,6 +7,7 @@ from nltk.stem import PorterStemmer
 from textblob import TextBlob
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy.sparse import csr_matrix
 
@@ -151,3 +152,5 @@ for article_type in article_types:
 # Print top 10 words for each article type
 for article_type, words in top_words_per_type.items():
     print(f"Top 10 words for {article_type}: {words}")
+
+df.to_csv('processed_data.csv', index=False)
