@@ -6,10 +6,12 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from textblob import TextBlob
 import matplotlib.pyplot as plt
+from sklearn.feature_extraction.text import TfidfVectorizer
+import numpy as np
+from scipy.sparse import csr_matrix
 
 # Load dataset and preprocess
 df = pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'])
-df = df[df['id'].apply(lambda x: str(x).isdigit())]
 df['content'] = df['content'].fillna('')
 # Remove all wikileaks.org articles that start with 'Tor'
 df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
@@ -103,3 +105,49 @@ print(word_counts_after.most_common(100))
 
 # Display the counts
 print(article_type_counts)
+
+# Reset index of df after all preprocessing to ensure alignment
+df.reset_index(drop=True, inplace=True)
+
+# Initialize TF-IDF Vectorizer without stopwords to simplify the demonstration
+tfidf = TfidfVectorizer(stop_words='english', max_features=10000)
+
+# Fit and transform the processed content
+tfidf_matrix = tfidf.fit_transform(df['processed_content'])
+
+# Feature names
+feature_names = tfidf.get_feature_names_out()
+
+# Article types
+article_types = df['type'].unique()
+
+# Dictionary to hold top words for each article type
+top_words_per_type = {}
+
+for article_type in article_types:
+    # Find indices of articles of the current type
+    indices = df[df['type'] == article_type].index
+    
+    # Ensure indices are not empty
+    if len(indices) > 0:
+        # TF-IDF subset for current type
+        tfidf_subset = tfidf_matrix[indices]
+        
+        # Ensure the subset is not empty
+        if isinstance(tfidf_subset, csr_matrix) and tfidf_subset.shape[0] > 0:
+            # Mean scores across all documents of the current type
+            mean_scores = np.mean(tfidf_subset, axis=0).tolist()[0]
+            # Mapping scores to feature names
+            scores_features = zip(mean_scores, feature_names)
+            # Sorting and selecting top 10
+            sorted_scores_features = sorted(scores_features, key=lambda x: x[0], reverse=True)[:10]
+            top_words = [feature for _, feature in sorted_scores_features]
+            top_words_per_type[article_type] = top_words
+        else:
+            top_words_per_type[article_type] = ['No articles found']
+    else:
+        top_words_per_type[article_type] = ['No articles found']
+
+# Print top 10 words for each article type
+for article_type, words in top_words_per_type.items():
+    print(f"Top 10 words for {article_type}: {words}")
