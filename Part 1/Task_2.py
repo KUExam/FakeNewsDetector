@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 from collections import Counter
+import seaborn as sns
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -17,6 +18,7 @@ df['content'] = df['content'].fillna('')
 # Remove all wikileaks.org articles that start with 'Tor'
 df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
 df = df[df['type'] != 'unknown']
+df.dropna(subset=['type'], inplace=True)
 
 # Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
@@ -91,6 +93,32 @@ plt.ylabel('Word')
 plt.title('Top 100 Most Frequent Words')
 plt.show()
 
+# Bar plot for article type distribution
+plt.figure(figsize=(10, 6))
+article_type_counts.plot(kind='bar')
+plt.xlabel('Article Type')
+plt.ylabel('Count')
+plt.title('Distribution of Article Types')
+plt.xticks(rotation=45)
+plt.show()
+
+# Box plot for sentiment distribution by article type
+plt.figure(figsize=(10, 6))
+df.boxplot(column='sentiment', by='type', rot=45)
+plt.title('Sentiment Distribution by Article Type')
+plt.xlabel('Article Type')
+plt.ylabel('Sentiment Score')
+plt.show()
+
+# Violin plot for article length distribution by article type
+plt.figure(figsize=(10, 6))
+sns.violinplot(data=df, x='type', y='article_length')
+plt.title('Article Length Distribution by Article Type')
+plt.xlabel('Article Type')
+plt.ylabel('Article Length')
+plt.xticks(rotation=45)
+plt.show()
+
 # Print URL, NUM, and DATE counts
 url_count = df['content'].str.count('<URL>').sum()
 num_count = df['content'].str.count('<NUM>').sum()
@@ -107,7 +135,37 @@ print(word_counts_after.most_common(100))
 # Display the counts
 print(article_type_counts)
 
-df.to_csv('processed_data.csv', index=False)
+# Split the data into training, validation, and test sets
+train_data, test_data, train_labels, test_labels = train_test_split(
+    df[['processed_content', 'id', 'domain', 'type', 'url', 'scraped_at', 'title', 'tags', 'authors']],
+    df['type'],
+    test_size=0.2,
+    random_state=42,
+    stratify=df['type']
+)
+
+# Split the test set into validation and test sets
+val_data, test_data, val_labels, test_labels = train_test_split(
+    test_data,
+    test_labels,
+    test_size=0.5,
+    random_state=42,
+    stratify=test_labels
+)
+
+# Create new DataFrames for each split
+train_df = pd.concat([pd.DataFrame(train_data), pd.DataFrame({'type': train_labels})], axis=1)
+val_df = pd.concat([pd.DataFrame(val_data), pd.DataFrame({'type': val_labels})], axis=1)
+test_df = pd.concat([pd.DataFrame(test_data), pd.DataFrame({'type': test_labels})], axis=1)
+
+# Save each split as a separate CSV file
+train_df.to_csv('train_data.csv', index=False)
+val_df.to_csv('val_data.csv', index=False)
+test_df.to_csv('test_data.csv', index=False)
+
+print(f"Training set: {len(train_df)} samples")
+print(f"Validation set: {len(val_df)} samples")
+print(f"Test set: {len(test_df)} samples")
 
 # Reset index of df after all preprocessing to ensure alignment
 df.reset_index(drop=True, inplace=True)
