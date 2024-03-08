@@ -21,9 +21,7 @@ df = df[df['type'] != 'unknown']
 df.dropna(subset=['type'], inplace=True)
 # Create the 'article_length' column
 df['article_length'] = df['content'].apply(lambda x: len(x.split()))
-
-# Check for negative article lengths
-negative_lengths = df[df['article_length'] < 0]
+df = df[df['article_length'] >= 0]
 
 # Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
@@ -91,13 +89,6 @@ top_words = most_common_words[:50]  # Adjust this slice for different numbers
 words = [word for word, freq in top_words]
 frequencies = [freq for word, freq in top_words]
 
-plt.figure(figsize=(10, 8))
-plt.barh(words[::-1], frequencies[::-1])  # Reverse to have the highest frequency on top
-plt.xlabel('Frequency')
-plt.ylabel('Word')
-plt.title('Top 100 Most Frequent Words')
-plt.show()
-
 # Bar plot for article type distribution
 plt.figure(figsize=(10, 6))
 article_type_counts.plot(kind='bar')
@@ -118,6 +109,7 @@ plt.show()
 # Violin plot for article length distribution by article type
 plt.figure(figsize=(10, 6))
 sns.violinplot(data=df, x='type', y='article_length')
+plt.ylim(0, None)
 plt.title('Article Length Distribution by Article Type')
 plt.xlabel('Article Type')
 plt.ylabel('Article Length')
