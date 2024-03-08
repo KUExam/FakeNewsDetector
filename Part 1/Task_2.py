@@ -9,10 +9,10 @@ import matplotlib.pyplot as plt
 
 # Load dataset and preprocess
 df = pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'])
-df = df[df['id'].apply(lambda x: str(x).isdigit())]
-df['content'] = df['content'].fillna('')
+#df = df[df['id'].apply(lambda x: str(x).isdigit())]
+#df['content'] = df['content'].fillna('')
 # Remove all wikileaks.org articles that start with 'Tor'
-df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
+#df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
 
 # Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
@@ -80,6 +80,12 @@ print(word_counts_before.most_common(100))
 
 print("\n100 most frequent words AFTER processing:")
 print(word_counts_after.most_common(100))
+
+# Count the number of each article type
+article_type_counts = df['type'].value_counts()
+
+# Display the counts
+print(article_type_counts)
 
 # Article length and sentiment analysis by article type
 df['article_length'] = df['content'].apply(lambda x: len(x.split()))
