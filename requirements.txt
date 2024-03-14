@@ -2,7 +2,6 @@
 pandas==2.2.1
 seaborn==0.13.2
 clean-text==0.6.0
-scikit-learn==1.4.0
 matplotlib==3.8.3
 matplotlib-inline==0.1.6
 jupyterlab==4.1.1
