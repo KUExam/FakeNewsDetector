@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy.sparse import csr_matrix
 
-chunk_size = 500
+chunk_size = 2000
 tokenizer = RegexpTokenizer(r'\w+')
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
