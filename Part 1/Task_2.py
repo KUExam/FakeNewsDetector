@@ -13,18 +13,6 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 chunk_size = 500
-# Load dataset and preprocess
-df = pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'])
-df['content'] = df['content'].fillna('')
-# Remove all wikileaks.org articles that start with 'Tor'
-df = df.loc[~((df['domain'] == 'wikileaks.org') & df['content'].str.startswith('Tor'))]
-df = df[df['type'] != 'unknown']
-df.dropna(subset=['type'], inplace=True)
-# Create the 'article_length' column
-df['article_length'] = df['content'].apply(lambda x: len(x.split()))
-df = df[df['article_length'] >= 0]
-
-# Improved Tokenization and Preprocessing Function
 tokenizer = RegexpTokenizer(r'\w+')
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
@@ -60,6 +48,19 @@ for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type
     # Apply the token replacement function to the current chunk
     chunk['content'] = chunk['content'].apply(replace_tokens)
     
+    # Remove all wikileaks.org articles that start with 'Tor'
+    chunk = chunk.loc[~((chunk['domain'] == 'wikileaks.org') & chunk['content'].str.startswith('Tor'))]
+    
+    # Remove articles where 'type' is 'unknown' and drop NaNs in 'type'
+    chunk = chunk[chunk['type'] != 'unknown']
+    chunk.dropna(subset=['type'], inplace=True)
+
+    # Create the 'article_length' column
+    chunk['article_length'] = chunk['content'].apply(lambda x: len(x.split()))
+    
+    # Filter based on 'article_length'
+    chunk = chunk[chunk['article_length'] >= 0]
+
     # Tokenize the content in the current chunk
     chunk['tokenized_content'] = chunk['content'].apply(lambda x: tokenizer.tokenize(x))
     
@@ -78,25 +79,6 @@ for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type
 # Concatenate all processed chunks to form the full DataFrame
 df = pd.concat(chunk_list)
 
-df.fillna({
-    'type': 'none',
-    'scraped_at': 'none',
-    'title': 'none',
-    'content': 'none',
-    'url': 'none',
-    'id': 'none',
-    'domain': 'none',  # Example of filling NaN with a default value
-    'tags': 'none',       # Another example
-    'keywords': 'none',
-    'authors': 'none',
-    'meta_keywords': 'none',
-    'meta_description': 'none',
-    'tags': 'none',
-    'summary': 'none',
-    'source': 'none'
-    }, inplace=True)
-
-# Count the number of each article type
 article_type_counts = df['type'].value_counts()
 
 # Frequency analysis
@@ -209,7 +191,7 @@ print(f"Test set: {len(test_df)} samples")
 df.reset_index(drop=True, inplace=True)
 
 # Initialize TF-IDF Vectorizer without stopwords to simplify the demonstration
-tfidf = TfidfVectorizer(stop_words='english', max_features=10000)
+tfidf = TfidfVectorizer(stop_words='english', max_features=1000)
 
 # Fit and transform the processed content
 tfidf_matrix = tfidf.fit_transform(df['processed_content'])
