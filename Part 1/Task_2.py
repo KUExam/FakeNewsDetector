@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy.sparse import csr_matrix
 
+chunk_size = 500
 # Load dataset and preprocess
 df = pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'])
 df['content'] = df['content'].fillna('')
@@ -50,21 +51,50 @@ def preprocess_text(text):
     tokens = [stemmer.stem(word) for word in tokens if word not in stop_words]
     return " ".join(tokens)
 
+chunk_list = []  # List to hold processed chunks
 
-# Apply preprocessing
-df['processed_content'] = df['content'].apply(preprocess_text)
+for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'], chunksize=chunk_size):
+    # Fill missing content in the current chunk
+    chunk['content'] = chunk['content'].fillna('')
+    
+    # Apply the token replacement function to the current chunk
+    chunk['content'] = chunk['content'].apply(replace_tokens)
+    
+    # Tokenize the content in the current chunk
+    chunk['tokenized_content'] = chunk['content'].apply(lambda x: tokenizer.tokenize(x))
+    
+    # Perform sentiment analysis on the modified 'content' of the current chunk
+    chunk['sentiment'] = chunk['content'].apply(lambda x: TextBlob(x).sentiment.polarity)
+    
+    # Filter out stopwords and stem the remaining words in the current chunk
+    chunk['filtered_content'] = chunk['tokenized_content'].apply(lambda x: [stemmer.stem(word) for word in x if word.lower() not in stop_words])
+    
+    # Process content by tokenizing, stemming, and removing stopwords in the current chunk
+    chunk['processed_content'] = chunk['content'].apply(preprocess_text)
+    
+    # Append the processed chunk to the list
+    chunk_list.append(chunk)
 
-# Apply the token replacement function
-df['content'] = df['content'].apply(replace_tokens)
+# Concatenate all processed chunks to form the full DataFrame
+df = pd.concat(chunk_list)
 
-# Tokenize the content
-df['tokenized_content'] = df['content'].apply(lambda x: tokenizer.tokenize(x))
-
-# Perform sentiment analysis on the modified 'content'
-df['sentiment'] = df['content'].apply(lambda x: TextBlob(x).sentiment.polarity)
-
-# Filter out stopwords and stem the remaining words
-df['filtered_content'] = df['tokenized_content'].apply(lambda x: [stemmer.stem(word) for word in x if word.lower() not in stop_words])
+df.fillna({
+    'type': 'none',
+    'scraped_at': 'none',
+    'title': 'none',
+    'content': 'none',
+    'url': 'none',
+    'id': 'none',
+    'domain': 'none',  # Example of filling NaN with a default value
+    'tags': 'none',       # Another example
+    'keywords': 'none',
+    'authors': 'none',
+    'meta_keywords': 'none',
+    'meta_description': 'none',
+    'tags': 'none',
+    'summary': 'none',
+    'source': 'none'
+    }, inplace=True)
 
 # Count the number of each article type
 article_type_counts = df['type'].value_counts()
@@ -133,6 +163,11 @@ print(word_counts_after.most_common(100))
 # Display the counts
 print(article_type_counts)
 
+if df.isnull().any().any():
+    print("NaN values found. Please check and clean your DataFrame.")
+else:
+    print("No NaN values found. Proceeding with the train-test split.")
+
 # Split the data into training, validation, and test sets
 train_data, test_data, train_labels, test_labels = train_test_split(
     df[['processed_content', 'id', 'domain', 'type', 'url', 'scraped_at', 'title', 'tags', 'authors']],
@@ -152,9 +187,14 @@ val_data, test_data, val_labels, test_labels = train_test_split(
 )
 
 # Create new DataFrames for each split
-train_df = pd.concat([pd.DataFrame(train_data), pd.DataFrame({'type': train_labels})], axis=1)
-val_df = pd.concat([pd.DataFrame(val_data), pd.DataFrame({'type': val_labels})], axis=1)
-test_df = pd.concat([pd.DataFrame(test_data), pd.DataFrame({'type': test_labels})], axis=1)
+train_df = pd.DataFrame(train_data)
+train_df['type'] = train_labels
+
+val_df = pd.DataFrame(val_data)
+val_df['type'] = val_labels
+
+test_df = pd.DataFrame(test_data)
+test_df['type'] = test_labels
 
 # Save each split as a separate CSV file
 train_df.to_csv('train_data.csv', index=False)
