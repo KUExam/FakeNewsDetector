@@ -11,6 +11,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 import numpy as np
 from scipy.sparse import csr_matrix
+from tqdm import tqdm
+tqdm.pandas()
 
 chunk_size = 8000
 tokenizer = RegexpTokenizer(r'\w+')
@@ -54,7 +56,7 @@ for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type
     chunk['content'] = chunk['content'].fillna('')
     
     # Apply the token replacement function to the current chunk
-    chunk['content'] = chunk['content'].apply(replace_tokens)
+    chunk['content'] = chunk['content'].progress_apply(replace_tokens)
     
     # Remove all wikileaks.org articles that start with 'Tor'
     chunk = chunk.loc[~((chunk['domain'] == 'wikileaks.org') & chunk['content'].str.startswith('Tor'))]
@@ -64,28 +66,28 @@ for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type
     chunk.dropna(subset=['type'], inplace=True)
 
     # Create the 'article_length' column
-    chunk['article_length'] = chunk['content'].apply(lambda x: len(x.split()))
+    chunk['article_length'] = chunk['content'].progress_apply(lambda x: len(x.split()))
     
     # Filter based on 'article_length'
     chunk = chunk[chunk['article_length'] >= 0]
 
     # Assign category based on type
-    chunk['category'] = chunk['type'].apply(assign_category)
+    chunk['category'] = chunk['type'].progress_apply(assign_category)
 
     # Remove rows with types that don't fall into our defined categories
     chunk = chunk[chunk['category'] != 'delete']
 
     # Tokenize the content in the current chunk
-    chunk['tokenized_content'] = chunk['content'].apply(lambda x: tokenizer.tokenize(x))
+    chunk['tokenized_content'] = chunk['content'].progress_apply(lambda x: tokenizer.tokenize(x))
     
     # Perform sentiment analysis on the modified 'content' of the current chunk
-    chunk['sentiment'] = chunk['content'].apply(lambda x: TextBlob(x).sentiment.polarity)
+    chunk['sentiment'] = chunk['content'].progress_apply(lambda x: TextBlob(x).sentiment.polarity)
     
     # Filter out stopwords and stem the remaining words in the current chunk
-    chunk['filtered_content'] = chunk['tokenized_content'].apply(lambda x: [stemmer.stem(word) for word in x if word.lower() not in stop_words])
+    chunk['filtered_content'] = chunk['tokenized_content'].progress_apply(lambda x: [stemmer.stem(word) for word in x if word.lower() not in stop_words])
     
     # Process content by tokenizing, stemming, and removing stopwords in the current chunk
-    chunk['processed_content'] = chunk['content'].apply(preprocess_text)
+    chunk['processed_content'] = chunk['content'].progress_apply(preprocess_text)
     
     # Append the processed chunk to the list
     chunk_list.append(chunk)
@@ -100,7 +102,7 @@ word_counts_before = Counter([word for row in df['tokenized_content'] for word i
 word_counts_after = Counter([word for row in df['filtered_content'] for word in row])
 
 # Article length and sentiment analysis by article type
-df['article_length'] = df['content'].apply(lambda x: len(x.split()))
+df['article_length'] = df['content'].progress_apply(lambda x: len(x.split()))
 aggregated_data = df.groupby('type').agg({
     'sentiment': ['mean', 'median'],
     'article_length': ['mean', 'median']
