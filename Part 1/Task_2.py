@@ -39,6 +39,14 @@ def preprocess_text(text):
     tokens = [stemmer.stem(word) for word in tokens if word not in stop_words]
     return " ".join(tokens)
 
+def assign_category(article_type):
+    if article_type in ['reliable', 'political', 'clickbait']:
+        return 'reliable'
+    elif article_type in ['fake', 'satire', 'bias', 'conspiracy', 'junksci', 'hate', 'unreliable']:
+        return 'fake'
+    else:
+        return 'delete'  # We'll use this to filter out unwanted types
+
 chunk_list = []  # List to hold processed chunks
 
 for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'], chunksize=chunk_size):
@@ -60,6 +68,12 @@ for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type
     
     # Filter based on 'article_length'
     chunk = chunk[chunk['article_length'] >= 0]
+
+    # Assign category based on type
+    chunk['category'] = chunk['type'].apply(assign_category)
+
+    # Remove rows with types that don't fall into our defined categories
+    chunk = chunk[chunk['category'] != 'delete']
 
     # Tokenize the content in the current chunk
     chunk['tokenized_content'] = chunk['content'].apply(lambda x: tokenizer.tokenize(x))
@@ -152,7 +166,7 @@ else:
 
 # Split the data into training, validation, and test sets
 train_data, test_data, train_labels, test_labels = train_test_split(
-    df[['processed_content', 'id', 'domain', 'type', 'url', 'scraped_at', 'title', 'tags', 'authors']],
+    df[['processed_content', 'id', 'domain', 'type', 'url', 'scraped_at', 'title', 'tags', 'authors', 'category']],
     df['type'],
     test_size=0.2,
     random_state=42,
