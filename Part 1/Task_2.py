@@ -247,3 +247,12 @@ for article_type in article_types:
 # Print top words for each article type based on TF-IDF analysis
 for article_type, words in top_words_per_type.items():
     print(f"Top 10 words for {article_type}: {words}")
+
+# Aggregate data to get mean and median of sentiment and article length for each category
+aggregated_category_data = df.groupby('category').agg({
+    'sentiment': ['mean', 'median'],
+    'article_length': ['mean', 'median']
+})
+
+print("\nAverage and Median of Sentiment and Article Length by Category:")
+print(aggregated_category_data)
