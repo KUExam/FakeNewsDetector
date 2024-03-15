@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # Read the original and additional training datasets
 train_df1 = pd.read_csv('train_data.csv')
-train_df2 = pd.read_csv('assignment2_clean.csv')
+train_df2 = pd.read_csv('assigment2_clean.csv')
 
 # Concatenate the two training DataFrames
 train_df = pd.concat([train_df1, train_df2], ignore_index=True)
