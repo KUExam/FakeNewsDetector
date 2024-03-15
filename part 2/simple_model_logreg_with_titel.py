@@ -11,10 +11,20 @@ train_df = pd.read_csv('train_data.csv')
 val_df = pd.read_csv('val_data.csv')
 test_df = pd.read_csv('test_data.csv')
 
-# Concatenate the title and the processed_content and fill NaN values with an empty string in the 'processed_content' column
-train_df['combined_text'] = train_df['title'] + ' ' + train_df['processed_content'].fillna('')
-val_df['combined_text'] = val_df['title'] + ' ' + val_df['processed_content'].fillna('')
-test_df['combined_text'] = test_df['title'] + ' ' + test_df['processed_content'].fillna('')
+# Ensure no NaN values in both 'title' and 'processed_content' before concatenation
+train_df['title'] = train_df['title'].fillna('')
+train_df['processed_content'] = train_df['processed_content'].fillna('')
+
+val_df['title'] = val_df['title'].fillna('')
+val_df['processed_content'] = val_df['processed_content'].fillna('')
+
+test_df['title'] = test_df['title'].fillna('')
+test_df['processed_content'] = test_df['processed_content'].fillna('')
+
+# Concatenate 'title' and 'processed_content' for each dataset
+train_df['combined_text'] = train_df['title'] + ' ' + train_df['processed_content']
+val_df['combined_text'] = val_df['title'] + ' ' + val_df['processed_content']
+test_df['combined_text'] = test_df['title'] + ' ' + test_df['processed_content']
 
 # Initialize the vectorizer
 vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
