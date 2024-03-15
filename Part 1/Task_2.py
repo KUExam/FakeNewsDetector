@@ -14,7 +14,7 @@ from scipy.sparse import csr_matrix
 from tqdm import tqdm
 tqdm.pandas()
 
-chunk_size = 8000
+chunk_size = 10000
 tokenizer = RegexpTokenizer(r'\w+')
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
@@ -51,7 +51,7 @@ def assign_category(article_type):
 
 chunk_list = []  # List to hold processed chunks
 
-for chunk in pd.read_csv("FakeNews_2000rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'], chunksize=chunk_size):
+for chunk in pd.read_csv("995000_rows.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'], chunksize=chunk_size):
     # Fill missing content in the current chunk
     chunk['content'] = chunk['content'].fillna('')
     
