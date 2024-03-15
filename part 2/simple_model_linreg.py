@@ -11,6 +11,11 @@ train_df = pd.read_csv('train_data.csv')
 val_df = pd.read_csv('val_data.csv')
 test_df = pd.read_csv('test_data.csv')
 
+# Fill NaN values with an empty string in the 'processed_content' column
+train_df['processed_content'] = train_df['processed_content'].fillna('')
+val_df['processed_content'] = val_df['processed_content'].fillna('')
+test_df['processed_content'] = test_df['processed_content'].fillna('')
+
 # Initialize the vectorizer
 vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
 
