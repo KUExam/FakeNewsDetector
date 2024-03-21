@@ -1,50 +1,88 @@
 import pandas as pd
-import numpy as np
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Embedding, LSTM, SpatialDropout1D
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.utils import to_categorical
-from tqdm import tqdm  # import the tqdm library
+from tensorflow.keras import backend as K
+from tensorflow.keras.metrics import Metric, Precision, Recall
+from tqdm import tqdm
+import tensorflow as tf
 
 # Load your datasets
-train_data = pd.read_csv('train_data_combined.csv')
-val_data = pd.read_csv('val_data.csv')
+train_data = pd.read_csv('train_data.csv').fillna('')
+val_data = pd.read_csv('val_data.csv').fillna('')
+
+train_data['processed_content'] = train_data['processed_content'].fillna('')
+val_data['processed_content'] = val_data['processed_content'].fillna('')
 
 train_data['processed_content'] = train_data['processed_content'].astype(str)
 val_data['processed_content'] = val_data['processed_content'].astype(str)
 
-# Tokenize and Pad sequences
-max_fatures = 2000
-tokenizer = Tokenizer(num_words=max_fatures, split=' ')
-tokenizer.fit_on_texts(train_data['processed_content'].values)
-X_train = tokenizer.texts_to_sequences(tqdm(train_data['processed_content'].values))  # add progress bar
-X_train = pad_sequences(X_train)
+# Initialize the tokenizer
+max_features = 10000  # This is the size of the vocabulary
+tokenizer = Tokenizer(num_words=max_features, oov_token="<OOV>")
+tokenizer.fit_on_texts(train_data['processed_content'])
 
-X_val = tokenizer.texts_to_sequences(tqdm(val_data['processed_content'].values))  # add progress bar
-X_val = pad_sequences(X_val, maxlen=X_train.shape[1])
+# Convert texts to sequences of integers
+X_train_sequences = tokenizer.texts_to_sequences(tqdm(train_data['processed_content']))
+X_val_sequences = tokenizer.texts_to_sequences(tqdm(val_data['processed_content']))
 
-# Build the LSTM model
+# Padding sequences to ensure uniform length
+maxlen = 250  # You might need to adjust this based on your data
+X_train_padded = pad_sequences(X_train_sequences, maxlen=maxlen, truncating='post', padding='post')
+X_val_padded = pad_sequences(X_val_sequences, maxlen=maxlen, truncating='post', padding='post')
+
+# Convert labels to integers and then to binary class matrix
+Y_train = train_data['category'].map({'fake': 0, 'reliable': 1}).values
+Y_val = val_data['category'].map({'fake': 0, 'reliable': 1}).values
+
+# Convert labels to a format suitable for binary classification
+Y_train = to_categorical(Y_train, num_classes=2)
+Y_val = to_categorical(Y_val, num_classes=2)
+
 embed_dim = 128
 lstm_out = 196
-input_length = 1000  # Set a fixed input_length for the Embedding layer
+
+if tf.config.experimental.list_physical_devices('GPU'):
+    policy = tf.keras.mixed_precision.Policy('mixed_float16')
+    tf.keras.mixed_precision.set_global_policy(policy)
 
 model = Sequential()
-model.add(Embedding(max_fatures, embed_dim,input_length = input_length))
-model.add(SpatialDropout1D(0.4))
+model.add(Embedding(max_features, embed_dim))  # Removed input_length=None
+model.add(SpatialDropout1D(0.2))
 model.add(LSTM(lstm_out, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(2,activation='softmax'))
-model.compile(loss = 'categorical_crossentropy', optimizer='adam',metrics = ['accuracy'])
+model.add(Dense(2, activation='softmax', dtype='float32'))  # Using 2 because of to_categorical
 
-# Train the model
-Y_train = pd.get_dummies(train_data['category']).values
-Y_val = pd.get_dummies(val_data['category']).values
+class F1Score(Metric):
+    def __init__(self, name='f1_score', **kwargs):
+        super(F1Score, self).__init__(name=name, **kwargs)
+        self.precision = Precision()
+        self.recall = Recall()
 
-batch_size = 32
-model.fit(X_train, Y_train, epochs = 7, batch_size=batch_size, validation_data=(X_val, Y_val))
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        self.precision.update_state(y_true, y_pred, sample_weight)
+        self.recall.update_state(y_true, y_pred, sample_weight)
 
-# Evaluate the model
-score,acc = model.evaluate(X_val, Y_val, verbose = 2, batch_size = batch_size)
-print("score: %.2f" % (score))
-print("acc: %.2f" % (acc))
+    def result(self):
+        precision = self.precision.result()
+        recall = self.recall.result()
+        return 2 * ((precision * recall) / (precision + recall + K.epsilon()))
 
+    def reset_state(self):
+        self.precision.reset_state() 
+        self.recall.reset_state()
+
+model.compile(loss='categorical_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy', F1Score()])
+epochs = 5
+batch_size = 128
+
+history = model.fit(X_train_padded, Y_train, epochs=epochs, batch_size=batch_size, 
+                    validation_data=(X_val_padded, Y_val))
+
+evaluation = model.evaluate(X_val_padded, Y_val, batch_size=batch_size)
+print(f'Validation Loss: {evaluation[0]}')
+print(f'Validation Accuracy: {evaluation[1]}')
