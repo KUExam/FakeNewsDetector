@@ -1,0 +1,60 @@
+Average and Median of Sentiment and Article Length by Article Type:
+           sentiment           article_length       
+                mean    median           mean median
+type
+bias        0.084826  0.053145     433.029160  229.0
+clickbait   0.077741  0.073727     388.539180  312.0
+conspiracy  0.056117  0.044138     399.139785  144.0
+fake        0.105212  0.095238     440.690074  253.0
+hate        0.062669  0.065845     744.882447  428.0
+junksci     0.121510  0.118742     523.634330  429.0
+political   0.064010  0.057389     552.431662  311.0
+reliable    0.100700  0.092807     493.803316  338.0
+satire      0.064049  0.062500     264.050684  224.0
+unreliable  0.062274  0.057230     580.323169  447.0
+URL count: 194679
+Numeric values count: 8311994
+
+
+
+100 most frequent words BEFORE processing:
+[('the', 19596910), ('of', 10568382), ('to', 10338159), ('and', 9306445), ('NUM', 8312023), ('a', 7962538), ('in', 6724607), ('that', 4636514), ('is', 4160792), ('s', 3820849), ('for', 3478090), ('on', 2791124), ('The', 2622787), ('it', 2293470), ('with', 2238835), ('as', 2107447), ('I', 2103846), ('was', 2070752), ('are', 2012162), ('by', 1848935), ('be', 1789626), ('not', 1742112), ('have', 1726413), ('at', 1703166), ('from', 1615621), ('this', 1476462), ('you', 1473348), ('has', 1423944), ('he', 1390249), ('an', 1328241), ('his', 1299661), ('said', 1229564), ('they', 1197070), ('or', 1181748), ('who', 1136608), ('will', 1043830), ('their', 1035605), ('t', 1012374), ('we', 964708), ('but', 925891), ('about', 916499), ('all', 912061), ('more', 883973), ('which', 852518), ('one', 826989), ('would', 809304), ('It', 796776), ('can', 787530), ('were', 778043), ('had', 776635), ('been', 770240), ('people', 724602), ('out', 688700), ('up', 660818), ('In', 645749), ('our', 644032), ('what', 626887), ('its', 623279), ('than', 582614), ('like', 567829), ('there', 562336), ('so', 555734), ('when', 553416), ('A', 549057), ('also', 539060), ('her', 536513), ('other', 529977), ('your', 529919), ('Mr', 529192), ('if', 527170), ('no', 523631), ('time', 513191), ('them', 511576), ('do', 510503), ('But', 500985), ('New', 498739), ('into', 497743), ('some', 479980), ('just', 476523), ('over', 470346), ('only', 466886), ('He', 466248), ('This', 465133), ('We', 451494), ('year', 440553), ('my', 437551), ('re', 430935), ('she', 430094), ('Trump', 425324), ('two', 423583), ('after', 413191), ('even', 406874), ('years', 401384), ('new', 401368), ('And', 400507), ('could', 399137), ('now', 399010), ('You', 393336), ('because', 392472), ('first', 378936)]
+
+100 most frequent words AFTER processing:
+[('num', 8312081), ('said', 1239036), ('new', 1182805), ('one', 1005712), ('year', 903214), ('time', 886773), ('state', 835704), ('would', 834480), ('peopl', 796376), ('like', 737678), ('also', 576677), ('use', 564198), ('mr', 558460), ('us', 548502), ('make', 521872), ('say', 517635), ('even', 502887), ('get', 495322), ('go', 492099), ('american', 478214), ('work', 466230), ('two', 463393), ('govern', 462101), ('right', 460373), ('presid', 459961), ('day', 454372), ('first', 446657), ('report', 441222), ('nation', 437803), ('trump', 437384), ('stori', 433160), ('mani', 427025), ('could', 414087), ('continu', 412111), ('read', 411193), ('come', 408191), ('world', 395428), ('take', 385066), ('call', 383122), ('may', 380193), ('iran', 373984), ('last', 371860), ('think', 362941), ('way', 361489), ('want', 358992), ('includ', 357885), ('know', 357234), ('back', 354265), ('see', 352356), ('well', 340077), ('countri', 339272), ('polit', 338908), ('need', 334112), ('public', 333153), ('york', 332130), ('support', 326928), ('tri', 320192), ('u', 319926), ('email', 315319), ('obama', 314960), ('war', 311255), ('made', 305767), ('much', 304648), ('pleas', 304106), ('unit', 300199), ('chang', 298602), ('look', 294171), ('show', 293667), ('hous', 288464), ('live', 284180), ('iranian', 283528), ('thing', 282950), ('law', 282909), ('group', 277350), ('help', 273540), ('compani', 270583), ('week', 263753), ('republican', 263662), ('good', 262609), ('health', 262451), ('issu', 261773), ('million', 259982), ('main', 258393), ('sign', 255383), ('inform', 255172), ('democrat', 253955), ('point', 253815), ('sinc', 250569), ('power', 249255), ('elect', 247707), ('part', 246814), ('end', 246323), ('offic', 245099), ('still', 244914), ('percent', 242875), ('life', 242114), ('servic', 240376), ('gener', 239957), ('leader', 238826), ('long', 236851)]
+type
+reliable      218564
+political     194518
+bias          133232
+fake          104883
+conspiracy     97314
+clickbait      27412
+unreliable     16233
+junksci        14040
+satire         13160
+hate            8779
+Name: count, dtype: int64
+Training set: 662508 samples
+Validation set: 82813 samples
+Test set: 82814 samples
+
+
+Top 10 words for political: ['num', 'iran', 'iranian', 'rec', 'nuclear', 'islam', 'trump', 'peopl', 'state', 'ali']
+Top 10 words for fake: ['num', 'news', 'think', 'sourc', 'url', 'cent', 'add', 'reader', 'fact', 'stori']
+Top 10 words for satire: ['num', 'advertis', 'use', 'said', 'like', 'know', 'new', 'time', 'trump', 'year']
+Top 10 words for reliable: ['num', 'mr', 'said', 'new', 'york', 'newslett', 'time', 'year', 'main', 'continu']
+Top 10 words for conspiracy: ['num', 'properti', 'ad', 'com', 'like', 'use', 'list', 'block', 'look', 'url']
+Top 10 words for unreliable: ['num', 'use', 'trump', 'state', 'page', 'like', 'offici', 'internet', 'oper', 'said']
+Top 10 words for bias: ['num', 'на', 'russia', 'updat', 'что', 'chang', 'не', 'websit', 'radio', 'voic']
+Top 10 words for clickbait: ['num', 'email', 'trump', 'said', 'presid', 'year', 'peopl', 'twitter', 'abort', 'url']
+Top 10 words for hate: ['num', 'said', 'immigr', 'muslim', 'black', 'white', 'origin', 'peopl', 'share', 'polic']
+Top 10 words for junksci: ['food', 'num', 'health', 'natur', 'com', 'diseas', 'free', 'cancer', 'studi', 'use']
+
+
+
+Average and Median of Sentiment and Article Length by Category:
+         sentiment           article_length       
+              mean    median           mean median
+category
+fake      0.082312  0.066121     437.370064  234.0
+reliable  0.083069  0.077729     513.142440  323.0
