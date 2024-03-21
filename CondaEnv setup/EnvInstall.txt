@@ -17,3 +17,5 @@ Second way
     >> conda create -n envFakeNews python=3.12.2
     >> conda activate envFakeNews
     >> pip install -r requirements.txt
+
+
