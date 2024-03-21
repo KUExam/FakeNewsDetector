@@ -5,8 +5,10 @@ from sklearn.metrics import accuracy_score, classification_report
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import sys
+sys.path.append("/Users/rasmuslyngsoe/Documents/GitHub/FakeNewsDetector")
 
-from ..Part_1.Task_2 import tfidf_matrix, feature_names
+from FakeNewsDetector.Part_1.Task_2 import tfidf_matrix, feature_names
 
 # Read pre-split train, validation, and test sets
 train_df = pd.read_csv('train_data.csv')
