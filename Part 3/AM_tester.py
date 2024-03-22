@@ -13,7 +13,6 @@ train_df = pd.read_csv('train_data.csv')
 val_df = pd.read_csv('val_data.csv')
 test_df = pd.read_csv('test_data.csv')
 
-
 # Fill NaN values with an empty string in the 'processed_content' column
 train_df['processed_content'] = train_df['processed_content'].fillna('')
 val_df['processed_content'] = val_df['processed_content'].fillna('')
@@ -27,46 +26,39 @@ y_train = train_df['category'].map({'fake': 0, 'reliable': 1})
 X_val = vectorizer.transform(val_df['processed_content'])
 y_val = val_df['category'].map({'fake': 0, 'reliable': 1})
 
-X_test = vectorizer.transform(test_df['processed_content']) 
+X_test = vectorizer.transform(test_df['processed_content'])
 y_test = test_df['category'].map({'fake': 0, 'reliable': 1})
 
 # Convert data to PyTorch tensors
 X_train_tensor = torch.tensor(X_train.toarray(), dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train.values, dtype=torch.long)
+y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32)  # BCELoss expects float labels
 X_val_tensor = torch.tensor(X_val.toarray(), dtype=torch.float32)
-y_val_tensor = torch.tensor(y_val.values, dtype=torch.long)
+y_val_tensor = torch.tensor(y_val.values, dtype=torch.float32)  # BCELoss expects float labels
 X_test_tensor = torch.tensor(X_test.toarray(), dtype=torch.float32)
-y_test_tensor = torch.tensor(y_test.values, dtype=torch.long)
+y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32)  # BCELoss expects float labels
 
-# Define neural network model with dropout
+# Define neural network model
 class ArticleClassifier(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
+    def __init__(self, input_size, hidden_size):
         super(ArticleClassifier, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(p=0.2)  # Dropout layer with probability 0.2
-        self.fc2 = nn.Linear(hidden_size, num_classes)
+        self.fc2 = nn.Linear(hidden_size, 1)  # Output layer with a single unit
+        self.sigmoid = nn.Sigmoid()  # Sigmoid activation for binary classification
     
     def forward(self, x):
         out = self.fc1(x)
         out = self.relu(out)
-        out = self.dropout(out)  # Apply dropout
         out = self.fc2(out)
+        out = self.sigmoid(out)  # Apply sigmoid activation
         return out
 
 # Initialize model, loss function, and optimizer
 input_size = X_train_tensor.shape[1]
 hidden_size = 100
-num_classes = 2
-model = ArticleClassifier(input_size, hidden_size, num_classes)
-criterion = nn.CrossEntropyLoss()
+model = ArticleClassifier(input_size, hidden_size)
+criterion = nn.BCELoss()  # Use BCELoss for binary classification
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-
-
-# Initialize variables for early stopping
-best_val_loss = float('inf')  # Set initial best validation loss to infinity
-patience = 3  # Number of epochs to wait for improvement
-counter = 0  # Counter to track epochs without improvement
 
 # Train model
 num_epochs = 40
@@ -80,7 +72,7 @@ for epoch in range(num_epochs):
 
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = criterion(outputs, labels)
+            loss = criterion(outputs, labels.view(-1, 1))  # Reshape labels for BCELoss
             loss.backward()
             optimizer.step()
 
@@ -90,28 +82,16 @@ for epoch in range(num_epochs):
     model.eval()
     with torch.no_grad():
         val_outputs = model(X_val_tensor)
-        val_loss = criterion(val_outputs, y_val_tensor)
-        val_preds = torch.argmax(val_outputs, axis=1)
+        val_loss = criterion(val_outputs, y_val_tensor.view(-1, 1))  # Reshape labels for BCELoss
+        val_preds = torch.round(val_outputs)  # Round predictions to 0 or 1
         val_acc = accuracy_score(y_val_tensor, val_preds)
         print(f'Validation Loss: {val_loss.item():.4f}, Validation Accuracy: {val_acc:.4f}')
-
-        # Check for improvement in validation loss
-        if val_loss < best_val_loss:
-            best_val_loss = val_loss
-            counter = 0  # Reset counter if there's improvement
-        else:
-            counter += 1  # Increment counter if there's no improvement
-
-        # Check early stopping condition
-        if counter >= patience:
-            print(f'Early stopping at epoch {epoch+1} due to no improvement in validation loss.')
-            break  # Stop training loop
 
 # Evaluate model on test set
 model.eval()
 with torch.no_grad():
     test_outputs = model(X_test_tensor)
-    test_preds = torch.argmax(test_outputs, axis=1)
+    test_preds = torch.round(test_outputs)  # Round predictions to 0 or 1
     test_acc = accuracy_score(y_test_tensor, test_preds)
     print('Test Accuracy:', test_acc)
     print('Classification Report:')
