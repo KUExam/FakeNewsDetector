@@ -8,9 +8,10 @@ from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
 
 # Read data (assuming you have separate CSV files for train, validation, and test sets)
-train_df = pd.read_csv('Assigment2_clean.csv')
-val_df = pd.read_csv('Assigment2_clean.csv')
-test_df = pd.read_csv('Assigment2_clean.csv')
+train_df = pd.read_csv('train_data.csv')
+val_df = pd.read_csv('val_data.csv')
+test_df = pd.read_csv('test_data.csv')
+
 
 # Fill NaN values with an empty string in the 'processed_content' column
 train_df['processed_content'] = train_df['processed_content'].fillna('')

@@ -58,3 +58,16 @@ Average and Median of Sentiment and Article Length by Category:
 category
 fake      0.082312  0.066121     437.370064  234.0
 reliable  0.083069  0.077729     513.142440  323.0
+
+
+Naive Bayes Simpel Model Output:
+
+Validation Accuracy: 0.7716421334814583
+              precision    recall  f1-score   support
+
+           0       0.75      0.77      0.76     38764
+           1       0.79      0.77      0.78     44049
+
+    accuracy                           0.77     82813
+   macro avg       0.77      0.77      0.77     82813
+weighted avg       0.77      0.77      0.77     82813

@@ -5,6 +5,8 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
+from tqdm import tqdm
+import numpy as np
 
 # Read our training, validation and test datasets.
 train_df = pd.read_csv('train_data.csv')
@@ -15,7 +17,6 @@ test_df = pd.read_csv('test_data.csv')
 train_df['processed_content'] = train_df['processed_content'].fillna('')
 val_df['processed_content'] = val_df['processed_content'].fillna('')
 test_df['processed_content'] = test_df['processed_content'].fillna('')
-
 
 # Initialize the vectorizer
 vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
@@ -33,7 +34,8 @@ y_test = test_df['category'].map({'reliable': 1, 'fake': 0}).values
 
 # Train the model
 model = MultinomialNB()
-model.fit(X_train_tfidf, y_train)
+for i in tqdm(range(100)):
+    model.partial_fit(X_train_tfidf, y_train, classes=np.unique(y_train))
 
 # Validation set predictions
 val_predictions = model.predict(X_val_tfidf)
