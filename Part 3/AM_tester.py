@@ -6,11 +6,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
+from tqdm import tqdm  # Import tqdm for progress bar
 
 # Read data (assuming you have separate CSV files for train, validation, and test sets)
-train_df = pd.read_csv('Assigment2_clean.csv')
-val_df = pd.read_csv('Assigment2_clean.csv')
-test_df = pd.read_csv('Assigment2_clean.csv')
+train_df = pd.read_csv('train_data.csv')
+val_df = pd.read_csv('val_data.csv')
+test_df = pd.read_csv('test_data.csv')
 
 # Fill NaN values with an empty string in the 'processed_content' column
 train_df['processed_content'] = train_df['processed_content'].fillna('')
@@ -63,16 +64,19 @@ num_epochs = 10
 batch_size = 32
 for epoch in range(num_epochs):
     model.train()
-    for i in range(0, len(X_train_tensor), batch_size):
-        inputs = X_train_tensor[i:i+batch_size]
-        labels = y_train_tensor[i:i+batch_size]
-        
-        optimizer.zero_grad()
-        outputs = model(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-    
+    with tqdm(total=len(X_train_tensor), desc=f'Epoch {epoch+1}/{num_epochs}', unit=' samples') as pbar:
+        for i in range(0, len(X_train_tensor), batch_size):
+            inputs = X_train_tensor[i:i+batch_size]
+            labels = y_train_tensor[i:i+batch_size]
+
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+            pbar.update(len(inputs))  # Update progress bar
+
     # Validate model
     model.eval()
     with torch.no_grad():
@@ -80,7 +84,7 @@ for epoch in range(num_epochs):
         val_loss = criterion(val_outputs, y_val_tensor)
         val_preds = torch.argmax(val_outputs, axis=1)
         val_acc = accuracy_score(y_val_tensor, val_preds)
-        print(f'Epoch [{epoch+1}/{num_epochs}], Validation Loss: {val_loss.item():.4f}, Validation Accuracy: {val_acc:.4f}')
+        print(f'Validation Loss: {val_loss.item():.4f}, Validation Accuracy: {val_acc:.4f}')
 
 # Evaluate model on test set
 model.eval()
