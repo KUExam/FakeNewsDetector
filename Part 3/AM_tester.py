@@ -26,7 +26,7 @@ y_train = train_df['type'].map({'fake': 0, 'reliable': 1})
 X_val = vectorizer.transform(val_df['processed_content'])
 y_val = val_df['type'].map({'fake': 0, 'reliable': 1})
 
-X_test = vectorizer.transform(test_df['processed_content'])
+X_test = vectorizer.transform(test_df['processed_content']) 
 y_test = test_df['type'].map({'fake': 0, 'reliable': 1})
 
 # Convert data to PyTorch tensors
