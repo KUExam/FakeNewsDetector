@@ -7,6 +7,9 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import backend as K
 from tensorflow.keras.metrics import Metric, Precision, Recall
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 from tqdm import tqdm
 import tensorflow as tf
 
@@ -77,11 +80,25 @@ class F1Score(Metric):
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy', F1Score()])
-epochs = 5
-batch_size = 128
+epochs = 3
+batch_size = 200
 
 history = model.fit(X_train_padded, Y_train, epochs=epochs, batch_size=batch_size, 
                     validation_data=(X_val_padded, Y_val))
+
+# Get model predictions for the validation set
+val_predictions_prob = model.predict(X_val_padded)
+val_predictions = val_predictions_prob.argmax(axis=-1)
+
+y_val = Y_val.argmax(axis=-1)
+
+cm = confusion_matrix(y_val, val_predictions)
+
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['Fake', 'Reliable'], yticklabels=['Fake', 'Reliable'])
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.title('Confusion Matrix')
+plt.show()
 
 evaluation = model.evaluate(X_val_padded, Y_val, batch_size=batch_size)
 print(f'Validation Loss: {evaluation[0]}')
