@@ -60,6 +60,11 @@ model = ArticleClassifier(input_size, hidden_size)
 criterion = nn.BCELoss()  # Binary Cross Entropy Loss
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
+# Initialize variables for early stopping
+best_val_loss = float('inf')  # Set initial best validation loss to infinity
+patience = 2  # Number of epochs to wait for improvement
+counter = 0  # Counter to track epochs without improvement
+
 # Train model
 num_epochs = 40
 batch_size = 32
@@ -86,3 +91,15 @@ for epoch in range(num_epochs):
         val_preds = (val_outputs >= 0.5).float()  # Thresholding for prediction
         val_acc = accuracy_score(y_val_tensor, val_preds)
         print(f'Validation Loss: {val_loss.item():.4f}, Validation Accuracy: {val_acc:.4f}')
+
+        # Check for improvement in validation loss
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            counter = 0  # Reset counter if there's improvement
+        else:
+            counter += 1  # Increment counter if there's no improvement
+
+        # Check early stopping condition
+        if counter >= patience:
+            print(f'Early stopping at epoch {epoch+1} due to no improvement in validation loss.')
+            break  # Stop training loop
