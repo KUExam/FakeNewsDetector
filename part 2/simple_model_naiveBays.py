@@ -37,15 +37,16 @@ model = MultinomialNB()
 for i in tqdm(range(100)):
     model.partial_fit(X_train_tfidf, y_train, classes=np.unique(y_train))
 
-# Validation set predictions
-val_predictions = model.predict(X_val_tfidf)
-print(f"Validation Accuracy: {accuracy_score(y_val, val_predictions)}")
-print(classification_report(y_val, val_predictions))
+# Test set predictions
+test_predictions = model.predict(X_test_tfidf)
+print(f"Test Accuracy: {accuracy_score(y_test, test_predictions)}")
+print(classification_report(y_test, test_predictions))
 
 # We make a confusion matrix to give a clearer picture of our model's performance by showing the true positives, true negatives, false positives, and false negatives.
-cm = confusion_matrix(y_val, val_predictions)
+cm = confusion_matrix(y_test, test_predictions)
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['Fake', 'Reliable'], yticklabels=['Fake', 'Reliable'])
 plt.ylabel('Actual')
 plt.xlabel('Predicted')
 plt.title('Confusion Matrix')
 plt.show()
+
