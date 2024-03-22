@@ -38,17 +38,19 @@ y_val_tensor = torch.tensor(y_val.values, dtype=torch.long)
 X_test_tensor = torch.tensor(X_test.toarray(), dtype=torch.float32)
 y_test_tensor = torch.tensor(y_test.values, dtype=torch.long)
 
-# Define neural network model
+# Define neural network model with dropout
 class ArticleClassifier(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes):
         super(ArticleClassifier, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(p=0.2)  # Dropout layer with probability 0.2
         self.fc2 = nn.Linear(hidden_size, num_classes)
     
     def forward(self, x):
         out = self.fc1(x)
         out = self.relu(out)
+        out = self.dropout(out)  # Apply dropout
         out = self.fc2(out)
         return out
 
