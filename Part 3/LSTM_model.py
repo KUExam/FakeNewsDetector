@@ -30,7 +30,7 @@ X_train_sequences = tokenizer.texts_to_sequences(tqdm(train_data['processed_cont
 X_val_sequences = tokenizer.texts_to_sequences(tqdm(val_data['processed_content']))
 
 # Padding sequences to ensure uniform length
-maxlen = 250  # You might need to adjust this based on your data
+maxlen = 250
 X_train_padded = pad_sequences(X_train_sequences, maxlen=maxlen, truncating='post', padding='post')
 X_val_padded = pad_sequences(X_val_sequences, maxlen=maxlen, truncating='post', padding='post')
 
@@ -50,7 +50,7 @@ if tf.config.experimental.list_physical_devices('GPU'):
     tf.keras.mixed_precision.set_global_policy(policy)
 
 model = Sequential()
-model.add(Embedding(max_features, embed_dim))  # Removed input_length=None
+model.add(Embedding(max_features, embed_dim)) 
 model.add(SpatialDropout1D(0.2))
 model.add(LSTM(lstm_out, dropout=0.2, recurrent_dropout=0.2))
 model.add(Dense(2, activation='softmax', dtype='float32'))  # Using 2 because of to_categorical
