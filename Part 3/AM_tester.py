@@ -62,7 +62,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Train model
 num_epochs = 40
-batch_size = 32
+batch_size = 10
 for epoch in range(num_epochs):
     model.train()
     with tqdm(total=len(X_train_tensor), desc=f'Epoch {epoch+1}/{num_epochs}', unit=' samples') as pbar:
