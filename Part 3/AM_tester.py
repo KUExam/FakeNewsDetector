@@ -68,7 +68,7 @@ counter = 0  # Counter to track epochs without improvement
 
 # Train model
 num_epochs = 40
-batch_size = 32
+batch_size = 10
 for epoch in range(num_epochs):
     model.train()
     with tqdm(total=len(X_train_tensor), desc=f'Epoch {epoch+1}/{num_epochs}', unit=' samples') as pbar:
