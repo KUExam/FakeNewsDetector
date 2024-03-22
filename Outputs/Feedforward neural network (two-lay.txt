@@ -49,6 +49,7 @@ Classification Report:
    macro avg       0.86      0.86      0.86     82814
 weighted avg       0.86      0.86      0.86     82814
 
+
 Early stopping at epoch 6 due to no improvement in validation loss.
 Test Accuracy: 0.8661337455019683
 Classification Report:
@@ -60,3 +61,10 @@ Classification Report:
     accuracy                           0.87     82814
    macro avg       0.87      0.87      0.87     82814
 weighted avg       0.87      0.87      0.87     82814
+
+
+
+
+
+After chageing loss function and took away early stopping:
+Validation Loss: 0.2835, Validation Accuracy: 0.8672

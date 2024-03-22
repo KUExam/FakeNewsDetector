@@ -66,7 +66,7 @@ patience = 2  # Number of epochs to wait for improvement
 counter = 0  # Counter to track epochs without improvement
 
 # Train model
-num_epochs = 40
+num_epochs = 5
 batch_size = 32
 for epoch in range(num_epochs):
     model.train()
