@@ -26,43 +26,43 @@ y_train = train_df['category'].map({'fake': 0, 'reliable': 1})
 X_val = vectorizer.transform(val_df['processed_content'])
 y_val = val_df['category'].map({'fake': 0, 'reliable': 1})
 
-X_test = vectorizer.transform(test_df['processed_content'])
+X_test = vectorizer.transform(test_df['processed_content']) 
 y_test = test_df['category'].map({'fake': 0, 'reliable': 1})
 
 # Convert data to PyTorch tensors
 X_train_tensor = torch.tensor(X_train.toarray(), dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32)  # BCELoss expects float labels
+y_train_tensor = torch.tensor(y_train.values, dtype=torch.float32).view(-1, 1)  # Reshape to [batch_size, 1]
 X_val_tensor = torch.tensor(X_val.toarray(), dtype=torch.float32)
-y_val_tensor = torch.tensor(y_val.values, dtype=torch.float32)  # BCELoss expects float labels
+y_val_tensor = torch.tensor(y_val.values, dtype=torch.float32).view(-1, 1)  # Reshape to [batch_size, 1]
 X_test_tensor = torch.tensor(X_test.toarray(), dtype=torch.float32)
-y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32)  # BCELoss expects float labels
+y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).view(-1, 1)  # Reshape to [batch_size, 1]
 
-# Define neural network model
+# Define neural network model with dropout
 class ArticleClassifier(nn.Module):
     def __init__(self, input_size, hidden_size):
         super(ArticleClassifier, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, 1)  # Output layer with a single unit
-        self.sigmoid = nn.Sigmoid()  # Sigmoid activation for binary classification
+        self.dropout = nn.Dropout(p=0.2)  # Dropout layer with probability 0.2
+        self.fc2 = nn.Linear(hidden_size, 1)  # Output layer with one neuron
     
     def forward(self, x):
         out = self.fc1(x)
         out = self.relu(out)
+        out = self.dropout(out)  # Apply dropout
         out = self.fc2(out)
-        out = self.sigmoid(out)  # Apply sigmoid activation
-        return out
+        return torch.sigmoid(out)  # Sigmoid activation for binary classification
 
 # Initialize model, loss function, and optimizer
 input_size = X_train_tensor.shape[1]
 hidden_size = 100
 model = ArticleClassifier(input_size, hidden_size)
-criterion = nn.BCELoss()  # Use BCELoss for binary classification
+criterion = nn.BCELoss()  # Binary Cross Entropy Loss
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Train model
 num_epochs = 40
-batch_size = 10
+batch_size = 32
 for epoch in range(num_epochs):
     model.train()
     with tqdm(total=len(X_train_tensor), desc=f'Epoch {epoch+1}/{num_epochs}', unit=' samples') as pbar:
@@ -72,7 +72,7 @@ for epoch in range(num_epochs):
 
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = criterion(outputs, labels.view(-1, 1))  # Reshape labels for BCELoss
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
@@ -82,17 +82,7 @@ for epoch in range(num_epochs):
     model.eval()
     with torch.no_grad():
         val_outputs = model(X_val_tensor)
-        val_loss = criterion(val_outputs, y_val_tensor.view(-1, 1))  # Reshape labels for BCELoss
-        val_preds = torch.round(val_outputs)  # Round predictions to 0 or 1
+        val_loss = criterion(val_outputs, y_val_tensor)
+        val_preds = (val_outputs >= 0.5).float()  # Thresholding for prediction
         val_acc = accuracy_score(y_val_tensor, val_preds)
         print(f'Validation Loss: {val_loss.item():.4f}, Validation Accuracy: {val_acc:.4f}')
-
-# Evaluate model on test set
-model.eval()
-with torch.no_grad():
-    test_outputs = model(X_test_tensor)
-    test_preds = torch.round(test_outputs)  # Round predictions to 0 or 1
-    test_acc = accuracy_score(y_test_tensor, test_preds)
-    print('Test Accuracy:', test_acc)
-    print('Classification Report:')
-    print(classification_report(y_test_tensor, test_preds))
