@@ -2,7 +2,7 @@ import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Embedding, LSTM, SpatialDropout1D
+from tensorflow.keras.layers import Dense, Embedding, LSTM, SpatialDropout1D, Bidirectional
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import backend as K
@@ -33,7 +33,7 @@ X_train_sequences = tokenizer.texts_to_sequences(tqdm(train_data['processed_cont
 X_val_sequences = tokenizer.texts_to_sequences(tqdm(val_data['processed_content']))
 
 # Padding sequences to ensure uniform length
-maxlen = 250
+maxlen = 250  # You might need to adjust this based on your data
 X_train_padded = pad_sequences(X_train_sequences, maxlen=maxlen, truncating='post', padding='post')
 X_val_padded = pad_sequences(X_val_sequences, maxlen=maxlen, truncating='post', padding='post')
 
@@ -53,10 +53,10 @@ if tf.config.experimental.list_physical_devices('GPU'):
     tf.keras.mixed_precision.set_global_policy(policy)
 
 model = Sequential()
-model.add(Embedding(max_features, embed_dim)) 
+model.add(Embedding(max_features, embed_dim))
 model.add(SpatialDropout1D(0.2))
-model.add(LSTM(lstm_out, dropout=0.2, recurrent_dropout=0.2))
-model.add(Dense(2, activation='softmax', dtype='float32'))  # Using 2 because of to_categorical
+model.add(Bidirectional(LSTM(lstm_out, dropout=0.2, recurrent_dropout=0.2)))  # Wrapped in Bidirectional
+model.add(Dense(2, activation='softmax', dtype='float32'))
 
 class F1Score(Metric):
     def __init__(self, name='f1_score', **kwargs):
