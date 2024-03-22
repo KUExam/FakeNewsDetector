@@ -11,3 +11,4 @@ scikit-learn==1.4.1
 wordcloud==1.9.3
 tqdm==4.65.0
 torch==2.2.1
+tensorflow==2.16.1
