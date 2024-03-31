@@ -53,12 +53,15 @@ class ArticleClassifier(nn.Module):
         out = self.fc2(out)
         return torch.sigmoid(out)  # Sigmoid activation for binary classification
 
+
+
+
 # Initialize model, loss function, and optimizer
 input_size = X_train_tensor.shape[1]
 hidden_size = 100
 model = ArticleClassifier(input_size, hidden_size)
 criterion = nn.BCELoss()  # Binary Cross Entropy Loss
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.01)
 
 # Initialize variables for early stopping
 best_val_loss = float('inf')  # Set initial best validation loss to infinity
@@ -66,7 +69,7 @@ patience = 2  # Number of epochs to wait for improvement
 counter = 0  # Counter to track epochs without improvement
 
 # Train model
-num_epochs = 5
+num_epochs = 10
 batch_size = 32
 for epoch in range(num_epochs):
     model.train()
@@ -103,3 +106,13 @@ for epoch in range(num_epochs):
         if counter >= patience:
             print(f'Early stopping at epoch {epoch+1} due to no improvement in validation loss.')
             break  # Stop training loop
+
+# Test model
+model.eval()
+with torch.no_grad():
+    test_outputs = model(X_test_tensor)
+    test_loss = criterion(test_outputs, y_test_tensor)
+    test_preds = (test_outputs >= 0.5).float()  # Thresholding for prediction
+    test_acc = accuracy_score(y_test_tensor, test_preds)
+    print(f'Test Loss: {test_loss.item():.4f}, Test Accuracy: {test_acc:.4f}')
+    print(classification_report(y_test_tensor, test_preds))
