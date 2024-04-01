@@ -65,7 +65,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.01)
 
 # Initialize variables for early stopping
 best_val_loss = float('inf')  # Set initial best validation loss to infinity
-patience = 2  # Number of epochs to wait for improvement
+patience = 3  # Number of epochs to wait for improvement
 counter = 0  # Counter to track epochs without improvement
 
 # Train model
@@ -106,6 +106,9 @@ for epoch in range(num_epochs):
         if counter >= patience:
             print(f'Early stopping at epoch {epoch+1} due to no improvement in validation loss.')
             break  # Stop training loop
+
+# Save the model
+torch.save(model.state_dict(), 'saved_model.pth')
 
 # Test model
 model.eval()
