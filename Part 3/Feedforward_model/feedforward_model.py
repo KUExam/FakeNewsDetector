@@ -9,9 +9,9 @@ import pandas as pd
 from tqdm import tqdm  # Import tqdm for progress bar
 
 # Read data (assuming you have separate CSV files for train, validation, and test sets)
-train_df = pd.read_csv('train_data.csv')
-val_df = pd.read_csv('val_data.csv')
-test_df = pd.read_csv('test_data.csv')
+train_df = pd.read_csv('data/train_data.csv')
+val_df = pd.read_csv('data/val_data.csv')
+test_df = pd.read_csv('data/test_data.csv')
 
 # Fill NaN values with an empty string in the 'processed_content' column
 train_df['processed_content'] = train_df['processed_content'].fillna('')
@@ -108,7 +108,7 @@ for epoch in range(num_epochs):
             break  # Stop training loop
 
 # Save the model
-torch.save(model.state_dict(), 'saved_model.pth')
+torch.save(model.state_dict(), 'FFN_model.pth')
 
 # Test model
 model.eval()
