@@ -1,0 +1,3 @@
+Havent uploaded the data file, so to run the code you have to move the; 
+train, val, test and LIAR datasets into a subfolder of Feedforwar_model.py
+This folder should be called data
