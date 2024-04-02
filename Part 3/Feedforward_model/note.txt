@@ -10,3 +10,6 @@ to only test, on either test set
 
 or LIAR set:
 >> python testing_liar.py --test_only
+
+############################################################################
+Kept the feedforward_model.py for now for refference, but not needed
