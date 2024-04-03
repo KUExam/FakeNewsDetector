@@ -68,3 +68,19 @@ weighted avg       0.87      0.87      0.87     82814
 
 After chageing loss function and took away early stopping:
 Validation Loss: 0.2835, Validation Accuracy: 0.8672
+
+
+
+
+With 4000 max featurs.
+Early stopping at epoch 5 due to no improvement in validation loss.
+Trained model has been saved
+Test Accuracy: 0.8730
+              precision    recall  f1-score   support
+
+         0.0       0.85      0.88      0.87     38764
+         1.0       0.89      0.87      0.88     44050
+
+    accuracy                           0.87     82814
+   macro avg       0.87      0.87      0.87     82814
+weighted avg       0.87      0.87      0.87     82814
