@@ -1,7 +1,7 @@
 import argparse
 import torch
-from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score, classification_report
 from feedforward_model import ArticleClassifier
 
@@ -13,7 +13,7 @@ def test_on_new_dataset(new_data_file, model_file):
     new_df['processed_content'] = new_df['processed_content'].fillna('')
 
     # Load the saved vectorizer
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
     vectorizer.fit(new_df['processed_content'])  # Assuming you have access to training data
 
     # Preprocess the new data using the fitted vectorizer
@@ -53,6 +53,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.test_only:
-        test_on_new_dataset(args.new_data_file, args.model_file, test_only=True)
-    else:
         test_on_new_dataset(args.new_data_file, args.model_file)
+    else:
+        print("Training is not performed as --test_only flag is provided.")
