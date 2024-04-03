@@ -1,0 +1,10 @@
+Simple Model uden BBC without test:
+Validation Accuracy: 0.8124207551954403
+              precision    recall  f1-score   support
+
+           0       0.80      0.80      0.80     38764
+           1       0.83      0.82      0.82     44049
+
+    accuracy                           0.81     82813
+   macro avg       0.81      0.81      0.81     82813
+weighted avg       0.81      0.81      0.81     82813
