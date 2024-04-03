@@ -1,4 +1,4 @@
-Simple Model uden BBC without test:
+Simple Model LogReg Without BBC without test:
 Validation Accuracy: 0.8124207551954403
               precision    recall  f1-score   support
 
