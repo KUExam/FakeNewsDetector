@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # Read our training, validation and test datasets.
 train_df = pd.read_csv('train_data.csv')
 val_df = pd.read_csv('val_data.csv')
-test_df = pd.read_csv('train_liar_update.csv')
+test_df = pd.read_csv('test_data.csv')
 
 # Fill NaN values with an empty string in the 'processed_content' column
 train_df['processed_content'] = train_df['processed_content'].fillna('')
@@ -17,7 +17,7 @@ val_df['processed_content'] = val_df['processed_content'].fillna('')
 test_df['processed_content'] = test_df['processed_content'].fillna('')
 
 # Initialize the vectorizer
-vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
+vectorizer = TfidfVectorizer(stop_words='english', max_features=8000)
 
 # Fit on training data and transform the training data
 X_train_tfidf = vectorizer.fit_transform(train_df['processed_content'])
@@ -42,7 +42,7 @@ print(classification_report(y_test, test_predictions))
 
 # We make a confusion matrix to give a clearer picture of our model's performance by showing the true positives, true negatives, false positives, and false negatives.
 cm = confusion_matrix(y_test, test_predictions)
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['fake', 'reliable'], yticklabels=['fake', 'reliable'])
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['Fake', 'Reliable'], yticklabels=['Fake', 'Reliable'])
 plt.ylabel('Actual')
 plt.xlabel('Predicted')
 plt.title('Confusion Matrix')
