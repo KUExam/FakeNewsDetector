@@ -85,3 +85,11 @@ Test Accuracy: 0.7710894293235443
     accuracy                           0.77     82814
    macro avg       0.77      0.77      0.77     82814
 weighted avg       0.77      0.77      0.77     82814
+
+
+
+BI-Lstm output: on test data.
+
+Test Accuracy: 0.90
+Test Loss: 0.21
+Test F1 score: 0.89
