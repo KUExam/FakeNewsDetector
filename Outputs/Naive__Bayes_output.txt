@@ -1,0 +1,41 @@
+
+Naive Bayes Simpel Model Output: On Train and Val data.
+
+Validation Accuracy: 0.7716421334814583
+              precision    recall  f1-score   support
+
+           0       0.75      0.77      0.76     38764
+           1       0.79      0.77      0.78     44049
+
+    accuracy                           0.77     82813
+   macro avg       0.77      0.77      0.77     82813
+weighted avg       0.77      0.77      0.77     82813
+
+
+
+Naive Bayes Simpel Model Output: On test data.
+
+Test Accuracy: 0.7710894293235443
+              precision    recall  f1-score   support
+
+           0       0.75      0.77      0.76     38764
+           1       0.79      0.77      0.78     44050
+
+    accuracy                           0.77     82814
+   macro avg       0.77      0.77      0.77     82814
+weighted avg       0.77      0.77      0.77     82814
+
+
+
+Naive Bayes Simpel Model Output: On Liar dataset.
+
+
+Liar Dataset Accuracy: 0.6330078125
+              precision    recall  f1-score   support
+
+           0       0.29      0.23      0.26      2834
+           1       0.73      0.79      0.76      7406
+
+    accuracy                           0.63     10240
+   macro avg       0.51      0.51      0.51     10240
+weighted avg       0.61      0.63      0.62     10240
