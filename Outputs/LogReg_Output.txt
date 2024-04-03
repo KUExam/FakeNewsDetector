@@ -11,7 +11,7 @@ weighted avg       0.81      0.81      0.81     82813
 
 
 
-Simple Model on Test dataset:
+Simple Model on Test dataset: 1000 max features
 Test Accuracy: 0.8155384355302243
               precision    recall  f1-score   support
 
@@ -21,3 +21,42 @@ Test Accuracy: 0.8155384355302243
     accuracy                           0.82     82814
    macro avg       0.81      0.82      0.81     82814
 weighted avg       0.82      0.82      0.82     82814
+
+Simple Model on Test dataset: 3000 max features
+
+Test Accuracy: 0.8421885188494699
+              precision    recall  f1-score   support
+
+           0       0.83      0.83      0.83     38764
+           1       0.85      0.85      0.85     44050
+
+    accuracy                           0.84     82814
+   macro avg       0.84      0.84      0.84     82814
+weighted avg       0.84      0.84      0.84     82814
+
+
+Simple Model on Test dataset: 10000 max features
+
+Test Accuracy: 0.8616538266476683
+              precision    recall  f1-score   support
+
+           0       0.85      0.85      0.85     38764
+           1       0.87      0.87      0.87     44050
+
+    accuracy                           0.86     82814
+   macro avg       0.86      0.86      0.86     82814
+weighted avg       0.86      0.86      0.86     82814
+
+
+
+
+Simple Model om Liar dataset:
+Liar Dataset Accuracy: 0.504296875
+              precision    recall  f1-score   support
+
+           0       0.30      0.58      0.39      2834
+           1       0.75      0.48      0.58      7406
+
+    accuracy                           0.50     10240
+   macro avg       0.52      0.53      0.49     10240
+weighted avg       0.62      0.50      0.53     10240
