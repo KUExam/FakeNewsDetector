@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument("--test_only", action="store_true", help="Test the model without training.")
     parser.add_argument("--train_only", action="store_true", help="Train the model without testing.")
     parser.add_argument("--new_data_file", type=str, default="data/test_data.csv", help="Path to the new dataset.")
-    parser.add_argument("--model_file", type=str, default="FFN_model.pth", help="Path to the model file.")
+    parser.add_argument("--model_file", type=str, default="FFN_model.pth", help="Path to the trained model file.")
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     test_df['processed_content'] = test_df['processed_content'].fillna('')
 
     # Preprocess data
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
     X_train = vectorizer.fit_transform(train_df['processed_content'])
     y_train = train_df['category'].map({'fake': 0, 'reliable': 1})
     X_val = vectorizer.transform(val_df['processed_content'])
@@ -73,6 +73,6 @@ if __name__ == "__main__":
         train_model(model, criterion, optimizer, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor)
         # Save trained model
         torch.save(model.state_dict(), args.model_file)
-        print("Trained model has been saved")
+        print("___Trained model has been saved___")
         # Test model
         test_model(model, criterion, X_test_tensor, y_test_tensor)
