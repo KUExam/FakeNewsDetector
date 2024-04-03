@@ -92,9 +92,6 @@ BI-Lstm output: on test data.
 Test Accuracy: 0.90
 Test Loss: 0.21
 Test F1 score: 0.89
->>>>>>> 9561cab91a199e6f4101055a51feb28dad4c77f6
-
-
 
 Feedforward neural network (FNN) model ouput: On Test data
 
