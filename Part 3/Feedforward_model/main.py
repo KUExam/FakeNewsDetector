@@ -58,5 +58,7 @@ if __name__ == "__main__":
     else:
         # Train model
         train_model(model, criterion, optimizer, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor)
+        # Save trained model
+        torch.save(model.state_dict(), 'FFN_model.pth')
         # Test model
         test_model(model, criterion, X_test_tensor, y_test_tensor)
