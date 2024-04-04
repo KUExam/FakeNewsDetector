@@ -5,7 +5,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer  # Import the PorterStemmer
+from nltk.stem import PorterStemmer  
 
 # Load the data
 url = 'https://raw.githubusercontent.com/several27/FakeNewsCorpus/master/news_sample.csv'
