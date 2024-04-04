@@ -18,7 +18,7 @@ otherwise just:
 
 >> pip install -r requirements.txt
 
-
+# Cleaning and splitting
 To run the code you have to have a file called “995000_rows.csv” in the FAKENEWSDETECTOR folder that contains the 995K FakeNewsCorpus subset file.
 You also need a “BBC_data.csv” file that contains the extra reliable data scraped in graded exercise 2. 
 Navigate to part 1 folder:
