@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument("--test_only", action="store_true", help="Test the model without training.")
     parser.add_argument("--train_only", action="store_true", help="Train the model without testing.")
     parser.add_argument("--visualize_model", action="store_true", help="Visualize the neural network architecture.")
-    parser.add_argument("--new_data_file", type=str, default="data/test_data.csv", help="Path to the new dataset.")
+    parser.add_argument("--new_data_file", type=str, default="../../test_data.csv", help="Path to the new dataset.")
     parser.add_argument("--model_file", type=str, default="FFN_model.pth", help="Path to the trained model file.")
     return parser.parse_args()
 
@@ -27,8 +27,8 @@ if __name__ == "__main__":
         exit()
 
     # Read data
-    train_df = pd.read_csv('data/train_data.csv')
-    val_df = pd.read_csv('data/val_data.csv')
+    train_df = pd.read_csv('../../train_data.csv')
+    val_df = pd.read_csv('../../val_data.csv')
     test_df = pd.read_csv(args.new_data_file)  # Specified data file
 
     # Fill NaN values with an empty string in the 'processed_content' column
