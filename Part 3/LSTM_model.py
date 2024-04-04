@@ -1,3 +1,6 @@
+## This model is not tested and visualized in the report, 
+## as we decided to use BI_LSTM instead
+
 import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences

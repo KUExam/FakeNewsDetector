@@ -1,3 +1,6 @@
+## This model is not tested and visualized in the report, 
+## as it was too computationally expensive
+
 from transformers import MobileBertTokenizer, MobileBertForSequenceClassification, AdamW, get_linear_schedule_with_warmup
 import pandas as pd
 import torch
