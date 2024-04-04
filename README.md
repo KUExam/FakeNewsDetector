@@ -28,7 +28,14 @@ Navigate to part 1 folder:
 
 Navigate to part 2 folder:
 
-Run all tasks in Part 2 folder, starting with clean_BBC_data.py
+>> python3 clean_BBC_data.py
+>> python3 simple_model_naiveBayes_Liar.py
+>> python3 simple_model_logreg_with_BBC.py
+>> python3 simple_model_logreg_with_title.py
+>> python3 simple_model_logreg.py
+>> python3 simple_model_naiveBayes_Liar.py
+>> python3 simple_model_naiveBayes.py
+
 
 
 # Bi-LSTM model
