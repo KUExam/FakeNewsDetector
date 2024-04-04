@@ -1,5 +1,18 @@
 Feedforward neural network (two-layeredd):
 
+Feedforward neural network (FNN) model ouput: On Test data
+
+Test Accuracy: 0.8581
+              precision    recall  f1-score   support
+
+         0.0       0.85      0.85      0.85     38764
+         1.0       0.87      0.86      0.87     44050
+
+    accuracy                           0.86     82814
+   macro avg       0.86      0.86      0.86     82814
+weighted avg       0.86      0.86      0.86     82814
+
+
 
 batch size: 10
 Early stopping at epoch 5 due to no improvement in validation loss.
