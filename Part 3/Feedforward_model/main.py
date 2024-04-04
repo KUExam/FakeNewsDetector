@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from train_test import train_model, test_model
 from visualizations import visualization
 from model import ArticleClassifier
-from visualizations import visualize_model_torchviz, visualize_model_matplot
+from visualizations import visualize_model
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train or test the article classifier model.")
@@ -60,10 +60,10 @@ if __name__ == "__main__":
     model = ArticleClassifier(input_size, hidden_size)
     criterion = nn.BCELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
-    
+
     if args.visualize_model:
-        visualize_model_torchviz(input_size, hidden_size)
-        visualize_model_matplot(model)
+        visualize_model(input_size, hidden_size)
+
 
 if args.test_only:
     # Load pre-trained model
@@ -71,12 +71,10 @@ if args.test_only:
     # Test model without further training
     test_model(model, criterion, X_test_tensor, y_test_tensor)
     # Visualize predictions after testing
-    val_predictions = model(X_val_tensor)
-    val_preds = (val_predictions >= 0.5).float()
-    visualization(y_val_tensor, val_preds)
-    # Visualize model after testing
     if args.visualize_model:
-        visualize_model_matplot(model)
+        val_predictions = model(X_val_tensor)
+        val_preds = (val_predictions >= 0.5).float()
+        visualization(y_val_tensor, val_preds)
 
 elif args.train_only:
     # Train model
@@ -85,8 +83,6 @@ elif args.train_only:
     torch.save(model.state_dict(), args.model_file)
     print("___Trained model has been saved___")
     # Visualize model after training
-    if args.visualize_model:
-        visualize_model_matplot(model)
 
 else:
     # Train model
@@ -94,14 +90,10 @@ else:
     # Save trained model
     torch.save(model.state_dict(), args.model_file)
     print("___Trained model has been saved___")
-    # Visualize model after training
-    if args.visualize_model:
-        visualize_model_matplot(model)
     # Test model
     test_model(model, criterion, X_test_tensor, y_test_tensor)
     # Visualize predictions after testing
-    val_predictions = model(X_val_tensor)
-    val_preds = (val_predictions >= 0.5).float()
-    # Visualize model after testing
     if args.visualize_model:
-        visualize_model_matplot(model)
+        val_predictions = model(X_val_tensor)
+        val_preds = (val_predictions >= 0.5).float()
+        visualization(y_val_tensor, val_preds)

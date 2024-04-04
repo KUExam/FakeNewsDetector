@@ -7,7 +7,7 @@ import torchviz
 from model import ArticleClassifier
 
 
-def visualize_model_torchviz(input_size, hidden_size):
+def visualize_model(input_size, hidden_size):
     print("Visualizing model...")
     
     # Initialize model
@@ -21,22 +21,6 @@ def visualize_model_torchviz(input_size, hidden_size):
     visualization.view(cleanup=True)
     
     print("Model visualization displayed.")
-
-def visualize_model_matplot(model):
-    print("Visualizing model...")
-    
-    # Print model summary or architecture
-    print(model)
-    
-    # Visualize the model architecture directly as a PNG image
-    plt.figure(figsize=(10, 10))
-    # Code to visualize your model architecture (e.g., using torchsummary.summary)
-    
-    # Display the image
-    plt.show()
-    
-    print("Model visualization displayed.")
-
 
 
 def visualization(y_val, val_predictions):
