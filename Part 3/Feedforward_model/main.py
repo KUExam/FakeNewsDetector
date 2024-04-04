@@ -58,8 +58,8 @@ if __name__ == "__main__":
     input_size = X_train_tensor.shape[1]
     hidden_size = 100
     model = ArticleClassifier(input_size, hidden_size)
-    criterion = nn.BCELoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
+    criterion = nn.BCELoss() # Binary Cross entropy Loss function
+    optimizer = optim.Adam(model.parameters(), lr=0.01) # Adam optimizer 
 
     if args.visualize_model:
         visualize_model(input_size, hidden_size)
@@ -72,9 +72,9 @@ if args.test_only:
     test_model(model, criterion, X_test_tensor, y_test_tensor)
     # Visualize predictions after testing
     if args.visualize_model:
-        val_predictions = model(X_val_tensor)
-        val_preds = (val_predictions >= 0.5).float()
-        visualization(y_val_tensor, val_preds)
+        test_predictions = model(X_test_tensor)
+        test_preds = (test_predictions >= 0.5).float()
+        visualization(y_test_tensor, test_preds)
 
 elif args.train_only:
     # Train model
@@ -94,6 +94,6 @@ else:
     test_model(model, criterion, X_test_tensor, y_test_tensor)
     # Visualize predictions after testing
     if args.visualize_model:
-        val_predictions = model(X_val_tensor)
-        val_preds = (val_predictions >= 0.5).float()
-        visualization(y_val_tensor, val_preds)
+        test_predictions = model(X_test_tensor)
+        test_preds = (test_predictions >= 0.5).float()
+        visualization(y_test_tensor, test_preds)
