@@ -51,7 +51,7 @@ def assign_category(article_type):
 
 chunk_list = []  # List to hold processed chunks
 
-for chunk in pd.read_csv("Assigment2_data.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'], chunksize=chunk_size):
+for chunk in pd.read_csv("BBC_data.csv", usecols=['id', 'domain', 'type', 'url', 'content', 'scraped_at', 'title', 'tags', 'authors'], chunksize=chunk_size):
     # Fill missing content in the current chunk
     chunk['content'] = chunk['content'].fillna('')
     
@@ -106,5 +106,5 @@ else:
     print("No NaN values found. Proceeding with the train-test split.")
 
 
-df.to_csv('assigment2_dataclean.csv', index = False)
+df.to_csv('BBC_clean_data.csv', index = False)
 
