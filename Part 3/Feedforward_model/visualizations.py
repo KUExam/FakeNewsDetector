@@ -14,13 +14,11 @@ def visualize_model(input_size, hidden_size):
     model = ArticleClassifier(input_size, hidden_size)
     # Print model summary or architecture
     print(model)
-    # Visualize the model architecture directly in a window
+    # Visualize the model architecture directly as a PNG image
     x = torch.randn(1, input_size)
     visualization = torchviz.make_dot(model(x), params=dict(model.named_parameters()))
-    # Display the image in a window
-    plt.figure(figsize=(20, 20))
-    plt.imshow(visualization.view())
-    plt.show()
+    # Display the image
+    visualization.view(cleanup=True)
     
     print("Model visualization displayed.")
 
