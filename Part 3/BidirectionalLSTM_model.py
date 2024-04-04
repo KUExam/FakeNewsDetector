@@ -15,44 +15,21 @@ from tqdm import tqdm
 import tensorflow as tf
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # Force TensorFlow to use GPU 0
+# Load datasets
+def load_and_preprocess(file_path):
+    data = pd.read_csv(file_path).fillna('')
+    data['processed_content'] = data['processed_content'].fillna('').astype(str)
+    return data
 
-if tf.config.experimental.list_physical_devices('GPU'):
-    policy = tf.keras.mixed_precision.Policy('mixed_float16')
-    tf.keras.mixed_precision.set_global_policy(policy)
-
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-    try:
-        # If GPUs are found, try to set the first one as the only visible device
-        tf.config.experimental.set_visible_devices(gpus[0], 'GPU')
-        print("Using GPU:", gpus[0])
-    except RuntimeError as e:
-        # Visible devices must be set before GPUs have been initialized
-        print(e)
-
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
-
-# Load your datasets
-train_data = pd.read_csv('train_data.csv').fillna('')
-val_data = pd.read_csv('val_data.csv').fillna('')
-test_data = pd.read_csv('test_data.csv').fillna('')
-LIAR_data = pd.read_csv('train_liar_update.csv').fillna('')
-
-train_data['processed_content'] = train_data['processed_content'].fillna('')
-val_data['processed_content'] = val_data['processed_content'].fillna('')
-test_data['processed_content'] = test_data['processed_content'].fillna('')
-LIAR_data['processed_content'] = LIAR_data['processed_content'].fillna('')
-
-train_data['processed_content'] = train_data['processed_content'].astype(str)
-val_data['processed_content'] = val_data['processed_content'].astype(str)
-test_data['processed_content'] = test_data['processed_content'].astype(str)
-LIAR_data['processed_content'] = LIAR_data['processed_content'].astype(str)
+train_data = load_and_preprocess('train_data.csv')
+val_data = load_and_preprocess('val_data.csv')
+test_data = load_and_preprocess('test_data.csv')
+LIAR_data = load_and_preprocess('train_liar_update.csv')
 
 
-# Initialize the tokenizer
-max_features = 10000  # This is the size of the vocabulary
+# Tokenization and padding
+max_features = 10000  # Size of the vocabulary
+maxlen = 250  # Maximum length of the sequences
 tokenizer = Tokenizer(num_words=max_features, oov_token="<OOV>")
 tokenizer.fit_on_texts(train_data['processed_content'])
 
@@ -63,20 +40,16 @@ def tokenize_and_pad(text_series, tokenizer, maxlen=250):
     padded_sequences = pad_sequences(sequences, maxlen=maxlen, truncating='post', padding='post')
     return padded_sequences
 
-maxlen = 250  
-
 # Convert texts to sequences of integers
 X_train_sequences = tokenizer.texts_to_sequences(tqdm(train_data['processed_content']))
 X_val_sequences = tokenizer.texts_to_sequences(tqdm(val_data['processed_content']))
-
 X_test_sequences = tokenizer.texts_to_sequences(tqdm(test_data['processed_content']))
-X_test_padded = tokenize_and_pad(test_data['processed_content'], tokenizer, maxlen)
-
 X_new_sequences = tokenizer.texts_to_sequences(LIAR_data['processed_content'])
 
 # Padding sequences to ensure uniform length
 X_train_padded = tokenize_and_pad(train_data['processed_content'], tokenizer, maxlen)
 X_val_padded = tokenize_and_pad(val_data['processed_content'], tokenizer, maxlen)
+X_test_padded = tokenize_and_pad(test_data['processed_content'], tokenizer, maxlen)
 X_new_padded = pad_sequences(X_new_sequences, maxlen=maxlen, padding='post', truncating='post')
 
 
@@ -98,7 +71,7 @@ val_dataset = tf.data.Dataset.from_tensor_slices((X_val_padded, Y_val))
 embed_dim = 128
 lstm_out = 196
 
-epochs = 4
+epochs = 1
 batch_size = 200
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
