@@ -10,8 +10,12 @@ from torch.cuda.amp import GradScaler, autocast
 
 tokenizer = MobileBertTokenizer.from_pretrained('google/mobilebert-uncased')
 
+# Load our csv files
+train_df = pd.read_csv('train_data.csv').fillna('')
+val_df = pd.read_csv('val_data.csv').fillna('')
+
 # Function to encode the data
-""" def encode_data(df, tokenizer, batch_size=32, max_length=512, save_path='tokenized'):
+def encode_data(df, tokenizer, batch_size=32, max_length=512, save_path='tokenized'):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     
@@ -57,7 +61,7 @@ tokenizer = MobileBertTokenizer.from_pretrained('google/mobilebert-uncased')
     torch.save(labels, os.path.join(save_path, 'labels.pt'))
 
     return DataLoader(dataset, batch_size=batch_size, shuffle=True)
- """
+
 
 def load_tokenized_data(save_path):
     # Check if the tokenized data files exist
@@ -79,11 +83,6 @@ def load_tokenized_data(save_path):
     else:
         raise FileNotFoundError("Tokenized data files not found in the specified path.")
 
-
-""" # Load our csv files
-train_df = pd.read_csv('train_data.csv').fillna('')
-val_df = pd.read_csv('val_data.csv').fillna('')
-
 train_df['processed_content'] = train_df['processed_content'].fillna('')
 val_df['processed_content'] = val_df['processed_content'].fillna('')
 
@@ -92,7 +91,7 @@ val_df.dropna(subset=['processed_content'], inplace=True)
 
 assert train_df['processed_content'].isnull().sum() == 0, "train_df still contains NaN values"
 assert val_df['processed_content'].isnull().sum() == 0, "val_df still contains NaN values"
- """
+
 train_dataloader = load_tokenized_data('tokenized_data/train')
 validation_dataloader = load_tokenized_data('tokenized_data/validation')
 # Load DistilBertForSequenceClassification
