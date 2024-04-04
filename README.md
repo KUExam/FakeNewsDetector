@@ -19,10 +19,19 @@ otherwise just:
 >> pip install -r requirements.txt
 
 
-To create the training, validation and test sets, navigate to Part 1 folder, and run:
+To run the code you have to have a file called “995000_rows.csv” in the FAKENEWSDETECTOR folder that contains the 995K FakeNewsCorpus subset file.
+You also need a “BBC_data.csv” file that contains the extra reliable data scraped in graded exercise 2. 
+Navigate to part 1 folder:
 
+>> python3 Task_1.py
 >> python3 Task_2.py
 
+Navigate to part 2 folder:
+
+Run all tasks in Part 2 folder, starting with clean_BBC_data.py
+
+
+Bi-LSTM model
 
 
 Feedforward neural network:
