@@ -1,10 +1,11 @@
 # FakeNewsDetector
 Group Exam Project For KU 2024 in Data Science
 
-Collaborators:
+# Collaborators:
 Rasmus W. Lyngsøe, Niels Peter Kroon, Gustav Jes Iversen and Mark Wiskum
 
 
+# How to run the Project
 To run the program you first have to make sure you have the correct requirements:
 
 if you use conda to create an environment:
