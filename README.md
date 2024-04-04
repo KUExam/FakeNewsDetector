@@ -24,16 +24,23 @@ You also need a “BBC_data.csv” file that contains the extra reliable data sc
 Navigate to part 1 folder:
 
 >> python3 Task_1.py
+
 >> python3 Task_2.py
 
 Navigate to part 2 folder:
 
 >> python3 clean_BBC_data.py
+
 >> python3 simple_model_naiveBayes_Liar.py
+
 >> python3 simple_model_logreg_with_BBC.py
+
 >> python3 simple_model_logreg_with_title.py
+
 >> python3 simple_model_logreg.py
+
 >> python3 simple_model_naiveBayes_Liar.py
+
 >> python3 simple_model_naiveBayes.py
 
 
