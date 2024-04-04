@@ -11,7 +11,9 @@ To run the program you first have to make sure you have the correct requirements
 if you use conda to create an environment:
 
 >> conda create -n envFakeNews python=3.12.2
+
 >> conda activate envFakeNews
+
 >> pip install -r requirements.txt
 
 otherwise just:
