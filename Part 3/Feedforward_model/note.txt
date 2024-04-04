@@ -2,14 +2,15 @@ Havent uploaded the data file, so to run the code you have to move the;
 train, val, test and LIAR datasets into a subfolder of Feedforward_model.py
 This folder should be called data
 
-to train the Feedforward model:
+to train and test the Feedforward model:
 >> python3 main.py
 
-to only test, on either test set
+to only train:
+>> python3 your_script.py --train_only
+
+to only test on the original test set:
 >> python3 main.py --test_only
 
-or LIAR set:
->> python testing_liar.py --test_only
+to test on LIAR set:
+>> python3 main.py --test_only --new_data_file data/train_liar_update.csv
 
-############################################################################
-Kept the feedforward_model.py for now for refference, but not needed

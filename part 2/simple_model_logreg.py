@@ -17,7 +17,7 @@ val_df['processed_content'] = val_df['processed_content'].fillna('')
 test_df['processed_content'] = test_df['processed_content'].fillna('')
 
 # Initialize the vectorizer
-vectorizer = TfidfVectorizer(stop_words='english', max_features=1000)
+vectorizer = TfidfVectorizer(stop_words='english', max_features=8000)
 
 # Fit on training data and transform the training data
 X_train_tfidf = vectorizer.fit_transform(train_df['processed_content'])

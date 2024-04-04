@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 from sklearn.metrics import accuracy_score, classification_report
-from tqdm import tqdm  # Import tqdm for progress bar
+from tqdm import tqdm  
 
 def train_model(model, criterion, optimizer, X_train, y_train, X_val, y_val, num_epochs=10, patience=3, batch_size=32):
     best_val_loss = float('inf')
