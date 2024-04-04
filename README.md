@@ -31,10 +31,14 @@ Navigate to part 2 folder:
 Run all tasks in Part 2 folder, starting with clean_BBC_data.py
 
 
-Bi-LSTM model
+# Bi-LSTM model
 
+Ensure that you have train_data.csv, val_data.csv and test_data.csv in the main folder after running part 2.
+Navigate to the part 3 folder
 
-Feedforward neural network:
+>> python3 BidirectionalLSTM_Model.py
+
+# Feedforward neural network:
 
 This neural network was created using the argparse library, so you can run test_only and train_only, including visualize_model to get the visualizations of the model
 
