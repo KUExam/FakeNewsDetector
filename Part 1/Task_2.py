@@ -14,7 +14,7 @@ from scipy.sparse import csr_matrix
 from tqdm import tqdm
 tqdm.pandas()
 
-chunk_size = 10000
+chunk_size = 8000
 tokenizer = RegexpTokenizer(r'\w+')
 stemmer = PorterStemmer()
 stop_words = set(stopwords.words('english'))
@@ -114,7 +114,7 @@ print(aggregated_data)
 most_common_words = word_counts_after.most_common(10000)  # Get the top 10,000, but we'll plot only the top 100
 
 # Plotting the top 50 for visualization
-top_words = most_common_words[:50]  # Adjust this slice for different numbers
+top_words = most_common_words[:50]  
 words = [word for word, freq in top_words]
 frequencies = [freq for word, freq in top_words]
 
