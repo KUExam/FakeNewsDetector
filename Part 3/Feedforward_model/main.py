@@ -35,7 +35,7 @@ if __name__ == "__main__":
     test_df['processed_content'] = test_df['processed_content'].fillna('')
 
     # Preprocess data
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=6000)
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=7000)
     X_train = vectorizer.fit_transform(train_df['processed_content'])
     y_train = train_df['category'].map({'fake': 0, 'reliable': 1})
     X_val = vectorizer.transform(val_df['processed_content'])
