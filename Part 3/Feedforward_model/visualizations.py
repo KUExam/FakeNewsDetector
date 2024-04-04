@@ -6,13 +6,38 @@ import torch
 import torchviz
 from model import ArticleClassifier
 
-def visualize_model(input_size, hidden_size):
+
+def visualize_model_torchviz(input_size, hidden_size):
+    print("Visualizing model...")
+    
     # Initialize model
     model = ArticleClassifier(input_size, hidden_size)
-    
-    # Visualize the model architecture
+    # Print model summary or architecture
+    print(model)
+    # Visualize the model architecture directly as a PNG image
     x = torch.randn(1, input_size)
-    torchviz.make_dot(model(x), params=dict(model.named_parameters()))
+    visualization = torchviz.make_dot(model(x), params=dict(model.named_parameters()))
+    # Display the image
+    visualization.view(cleanup=True)
+    
+    print("Model visualization displayed.")
+
+def visualize_model_matplot(model):
+    print("Visualizing model...")
+    
+    # Print model summary or architecture
+    print(model)
+    
+    # Visualize the model architecture directly as a PNG image
+    plt.figure(figsize=(10, 10))
+    # Code to visualize your model architecture (e.g., using torchsummary.summary)
+    
+    # Display the image
+    plt.show()
+    
+    print("Model visualization displayed.")
+
+
 
 def visualization(y_val, val_predictions):
     # We make a confusion matrix to give a clearer picture of our model's performance
