@@ -68,4 +68,4 @@ to only test on the original test set:
 >> python3 main.py --test_only
 
 to test on LIAR set:
->> python3 main.py --test_only --new_data_file data/train_liar_update.csv
+>> python3 main.py --test_only --visualize_model --new_data_file ../../train_liar_update.csv
