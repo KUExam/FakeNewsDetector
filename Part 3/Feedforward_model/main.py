@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from train_test import train_model, test_model
 from visualizations import visualization
 from model import ArticleClassifier
+from visualizations import visualize_model
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train or test the article classifier model.")
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     # Read data
     train_df = pd.read_csv('data/train_data.csv')
     val_df = pd.read_csv('data/val_data.csv')
-    test_df = pd.read_csv(args.new_data_file)  # Use specified new data file
+    test_df = pd.read_csv(args.new_data_file)  # Specified data file
 
     # Fill NaN values with an empty string in the 'processed_content' column
     train_df['processed_content'] = train_df['processed_content'].fillna('')
@@ -35,7 +36,7 @@ if __name__ == "__main__":
     test_df['processed_content'] = test_df['processed_content'].fillna('')
 
     # Preprocess data
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=6000)
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=6000) # TF-IDF vectorization
     X_train = vectorizer.fit_transform(train_df['processed_content'])
     y_train = train_df['category'].map({'fake': 0, 'reliable': 1})
     X_val = vectorizer.transform(val_df['processed_content'])
@@ -59,12 +60,16 @@ if __name__ == "__main__":
     criterion = nn.BCELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
+    # Visualize model after initialization
+    visualize_model(input_size, hidden_size)
 
     if args.test_only:
         # Load pre-trained model
         model.load_state_dict(torch.load(args.model_file))
         # Test model without further training
         test_model(model, criterion, X_test_tensor, y_test_tensor)
+        # Visualize model after testing
+        visualize_model(input_size, hidden_size)
         # Visualize predictions after testing
         val_predictions = model(X_val_tensor)
         val_preds = (val_predictions >= 0.5).float()
@@ -76,6 +81,8 @@ if __name__ == "__main__":
         # Save trained model
         torch.save(model.state_dict(), args.model_file)
         print("___Trained model has been saved___")
+        # Visualize model after training
+        visualize_model(input_size, hidden_size)
     else:
         # Train model
         train_model(model, criterion, optimizer, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor)
@@ -84,6 +91,8 @@ if __name__ == "__main__":
         print("___Trained model has been saved___")
         # Test model
         test_model(model, criterion, X_test_tensor, y_test_tensor)
+        # Visualize model after testing
+        visualize_model(input_size, hidden_size)
         # Visualize predictions after testing
         val_predictions = model(X_val_tensor)
         val_preds = (val_predictions >= 0.5).float()
