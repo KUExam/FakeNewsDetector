@@ -6,6 +6,7 @@ import torch.optim as optim
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from train_test import train_model, test_model
+from visualizations import visualization
 from model import ArticleClassifier
 
 def parse_args():
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     test_df['processed_content'] = test_df['processed_content'].fillna('')
 
     # Preprocess data
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=4000)
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=6000)
     X_train = vectorizer.fit_transform(train_df['processed_content'])
     y_train = train_df['category'].map({'fake': 0, 'reliable': 1})
     X_val = vectorizer.transform(val_df['processed_content'])
@@ -50,6 +51,7 @@ if __name__ == "__main__":
     X_test_tensor = torch.tensor(X_test.toarray(), dtype=torch.float32)
     y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).view(-1, 1)
 
+
     # Initialize model, loss function, and optimizer
     input_size = X_train_tensor.shape[1]
     hidden_size = 100
@@ -57,11 +59,17 @@ if __name__ == "__main__":
     criterion = nn.BCELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.01)
 
+
     if args.test_only:
         # Load pre-trained model
         model.load_state_dict(torch.load(args.model_file))
         # Test model without further training
         test_model(model, criterion, X_test_tensor, y_test_tensor)
+        # Visualize predictions after testing
+        val_predictions = model(X_val_tensor)
+        val_preds = (val_predictions >= 0.5).float()
+        visualization(y_val_tensor, val_preds)
+
     elif args.train_only:
         # Train model
         train_model(model, criterion, optimizer, X_train_tensor, y_train_tensor, X_val_tensor, y_val_tensor)
@@ -76,3 +84,7 @@ if __name__ == "__main__":
         print("___Trained model has been saved___")
         # Test model
         test_model(model, criterion, X_test_tensor, y_test_tensor)
+        # Visualize predictions after testing
+        val_predictions = model(X_val_tensor)
+        val_preds = (val_predictions >= 0.5).float()
+        visualization(y_val_tensor, val_preds)
