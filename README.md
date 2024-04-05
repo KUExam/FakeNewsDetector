@@ -56,7 +56,7 @@ Navigate to the part 3 folder
 
 # Feedforward neural network:
 
-This neural network was created using the argparse library, so you can run test_only and train_only, including visualize_model to get the visualizations of the model
+This neural network was created using the argparse library, so you can run test_only and train_only, including visualize_model to get the visualizations of the model.
 
 to train and test the Feedforward model:
 >> python3 main.py
@@ -69,3 +69,4 @@ to only test on the original test set:
 
 to test on LIAR set:
 >> python3 main.py --test_only --visualize_model --new_data_file ../../train_liar_update.csv
+
