@@ -65,7 +65,7 @@ This neural network was created using the argparse library, so you can run test_
 
 >> --new_data_file
 
->> --model_file"
+>> --model_file
 
 Here is an example of how to run the code using the arguments:
 
