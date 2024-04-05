@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 # Read our training, validation and Liar datasets.
 train_df = pd.read_csv('train_data.csv')
 val_df = pd.read_csv('val_data.csv')
-liar_df = pd.read_csv('train_liar_update.csv')  # Load the Liar dataset
+liar_df = pd.read_csv('train_liar_update.csv') 
 
 # Fill NaN values with an empty string in the 'processed_content' column
 train_df['processed_content'] = train_df['processed_content'].fillna('')
 val_df['processed_content'] = val_df['processed_content'].fillna('')
-liar_df['processed_content'] = liar_df['processed_content'].fillna('')  # Do the same for the Liar dataset
+liar_df['processed_content'] = liar_df['processed_content'].fillna('')  
 
 # Initialize the vectorizer
 vectorizer = TfidfVectorizer(stop_words='english', max_features=10000)
@@ -24,18 +24,18 @@ X_train_tfidf = vectorizer.fit_transform(train_df['processed_content'])
 
 # Transform the validation and Liar data
 X_val_tfidf = vectorizer.transform(val_df['processed_content'])
-X_liar_tfidf = vectorizer.transform(liar_df['processed_content'])  # Transform the Liar data
+X_liar_tfidf = vectorizer.transform(liar_df['processed_content']) 
 
 y_train = train_df['category'].map({'reliable': 1, 'fake': 0}).values
 y_val = val_df['category'].map({'reliable': 1, 'fake': 0}).values
-y_liar = liar_df['category'].map({'reliable': 1, 'fake': 0}).values  # Do the same for the Liar dataset
+y_liar = liar_df['category'].map({'reliable': 1, 'fake': 0}).values  
 
 # Train the model
 model = LogisticRegression(random_state=42, max_iter=1000)
 model.fit(X_train_tfidf, y_train)
 
 # Liar dataset predictions
-liar_predictions = model.predict(X_liar_tfidf)  # Make predictions on the Liar dataset
+liar_predictions = model.predict(X_liar_tfidf) 
 print(f"Liar Dataset Accuracy: {accuracy_score(y_liar, liar_predictions)}")
 print(classification_report(y_liar, liar_predictions))
 

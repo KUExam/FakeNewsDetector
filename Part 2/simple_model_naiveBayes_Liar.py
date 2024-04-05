@@ -38,7 +38,7 @@ for i in tqdm(range(100)):
     model.partial_fit(X_train_tfidf, y_train, classes=np.unique(y_train))
 
 # Liar dataset predictions
-liar_predictions = model.predict(X_liar_tfidf)  # Make predictions on the Liar dataset
+liar_predictions = model.predict(X_liar_tfidf) 
 print(f"Liar Dataset Accuracy: {accuracy_score(y_liar, liar_predictions)}")
 print(classification_report(y_liar, liar_predictions))
 
