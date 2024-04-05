@@ -56,17 +56,41 @@ Navigate to the part 3 folder
 
 # Feedforward neural network:
 
-This neural network was created using the argparse library, so you can run test_only and train_only, including visualize_model to get the visualizations of the model.
+This neural network was created using the argparse library, so you can run test_only and train_only, including visualize_model to get the visualizations of the model. Here are the different arguments to run the program in different ways:
+>> --test_only
+
+>> --train_only
+
+>> --visualize_model
+
+>> --new_data_file
+
+>> --model_file"
+
+Here is an example of how to run the code using the arguments:
 
 to train and test the Feedforward model:
 >> python3 main.py
 
 to only train:
->> python3 your_script.py --train_only
+>> python3 main.py --train_only
 
-to only test on the original test set:
->> python3 main.py --test_only
+to only test and get visualizations on the original test set:
+>> python3 main.py --test_only --visualize_model
 
-to test on LIAR set:
+to only test and get visualizations on LIAR set:
 >> python3 main.py --test_only --visualize_model --new_data_file ../../train_liar_update.csv
 
+
+# Other Advanced models
+
+The LSTM and Transformer models can also be run, but isnt necessary, as they arent mentioned in the report, and the Transformer has a large demand for compute, while LSTM is less tuned version of the BI_LSTM used the the report.
+
+
+To run the Transformer model:
+
+>> python3 Trasnformer_model.py
+
+To run the LSTM model:
+
+>> python3 LSTM_model.py
